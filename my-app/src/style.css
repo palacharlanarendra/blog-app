@@ -1,0 +1,76 @@
+.header__icon img {
+  width: 15rem;
+  /* border: 2px solid green; */
+}
+.header {
+  width: 100%;
+  border-bottom: 2px solid grey;
+}
+.hero__section {
+  border: 2px solid green;
+}
+.container {
+  margin: 0 auto;
+}
+.hero_content div p {
+  margin: 2rem 0;
+  /* border: 2px solid grey; */
+}
+
+/* article styles */
+.author__image {
+  width: 3rem;
+  /* border: 2px solid grey; */
+}
+.active {
+  border-bottom: 2px solid blue;
+}
+/* Loader styles */
+@keyframes bouncing-loader {
+  to {
+    opacity: 0.1;
+    transform: translate3d(0, -16px, 0);
+  }
+}
+
+.bouncing-loader {
+  display: flex;
+  justify-content: center;
+}
+
+.bouncing-loader > div {
+  width: 16px;
+  height: 16px;
+  /* margin: 3rem 0.2rem; */
+  background: #8385aa;
+  border-radius: 50%;
+  animation: bouncing-loader 0.6s infinite alternate;
+}
+
+.bouncing-loader > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncing-loader > div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+/* article styles */
+.like__image img {
+  width: 1rem;
+  color: #bfdbfe;
+}
+/* tags component styles */
+.flex__articles {
+  display: flex;
+  justify-content: space-around;
+}
+.allTags {
+  flex: 0 1 30%;
+  margin-top: 10rem;
+}
+.allTags div {
+  margin: 0.2rem;
+}
+.articleSection {
+  flex: 0 1 65%;
+}
