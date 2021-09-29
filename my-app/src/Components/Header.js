@@ -33,15 +33,28 @@ function Header() {
           {/* <!-- Mobile Menu open: "block", Menu closed: "hidden" --> */}
           <div class='items-center lg:flex'>
             <div class='flex flex-col mt-4 space-y-8 lg:flex-row lg:items-center lg:mt-0 lg:space-y-0 lg:space-x-16'>
-              <button className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'>
+              <NavLink
+                activeclassName='active'
+                to='/'
+                className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+              >
+                Home
+              </NavLink>
+              <NavLink
+                activeclassName='active'
+                to='/ourstory'
+                className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+              >
                 Our story
-              </button>
-              <button className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'>
-                Membership
-              </button>
-              <button className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'>
+              </NavLink>
+
+              <NavLink
+                activeclassName='active'
+                to='/write'
+                className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+              >
                 Write
-              </button>
+              </NavLink>
               <NavLink
                 activeclassName='active'
                 to='/signin'

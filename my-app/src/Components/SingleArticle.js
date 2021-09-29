@@ -1,10 +1,12 @@
 import React from 'react';
 import moment from 'moment';
+import Loader from './Loader';
 class SingleArticle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       singleArticle: [],
+      error: '',
     };
   }
   componentDidMount = async () => {
@@ -13,21 +15,31 @@ class SingleArticle extends React.Component {
       await fetch(
         `https://mighty-oasis-08080.herokuapp.com/api/articles/${slug}`
       )
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          } else {
+            return res.json();
+          }
+        })
         .then((data) =>
           this.setState({
             singleArticle: [data],
           })
         );
     } catch (error) {
-      console.log(error);
+      this.setState({
+        error: 'Article not fetched',
+      });
     }
   };
   render() {
-    console.log(this.state.singleArticle[0]?.article?.updatedAt);
+    console.log(this.state.singleArticle[0]?.article.author.image);
+    let { error } = this.state;
     return (
       <>
         <section className='px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20'>
+          {this.state.singleArticle.length === 0 && !error ? <Loader /> : ''}
           <p className='mb-2 text-xs font-semibold tracking-wide text-gray-600 uppercase sm:text-center'>
             {moment(this.state.singleArticle[0]?.article?.updatedAt).format(
               'MMM Do YY'
@@ -51,7 +63,7 @@ class SingleArticle extends React.Component {
             <a href='/' aria-label='Author' className='inline-block mb-1'>
               <img
                 alt='avatar'
-                src='https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260'
+                src={this.state.singleArticle[0]?.article.author.image}
                 className='object-cover w-10 h-10 rounded-full shadow-sm'
               />
             </a>

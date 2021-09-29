@@ -21,8 +21,15 @@ class Signup extends React.Component {
     return re.test(email);
   };
   validatePassword = (password) => {
-    const re = /^(?=.*?[a-z])(?=.*?[0-9]).{6,}$/;
-    return re.test(password);
+    let passwordError;
+    if (password.length < 7) {
+      passwordError = "Password can't be less than 6 characters";
+    }
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]/;
+    if (!re.test(password)) {
+      passwordError = 'Password must contain a character and a Number';
+    }
+    return passwordError;
   };
 
   handleInput = ({ target }) => {
@@ -33,13 +40,11 @@ class Signup extends React.Component {
         errors.email = this.validateEmail(value) ? '' : 'Email is not valid!';
         break;
       case 'password':
-        errors.password = this.validatePassword(value)
-          ? 'Password must contain numbers , alphabets and more than six letters'
-          : '';
+        errors.password = this.validatePassword(value);
+
         break;
       case 'confirmPassword':
-        errors.confirmPassword =
-          value.length < 1 ? 'ReEnter password is required' : '';
+        errors.confirmPassword = this.validatePassword(value);
         break;
       case 'username':
         errors.username =
@@ -101,11 +106,12 @@ class Signup extends React.Component {
                 class='block border border-grey-light w-full p-3 rounded mb-4'
                 placeholder='Confirm Password'
               />
-              <span>{confirmPassword}</span>
+              <span>{password || confirmPassword}</span>
               <button
                 type='submit'
                 onClick={this.handleSubmit}
                 class='w-full text-center py-3 rounded bg-blue-200 text-black hover:bg-blue-400 focus:outline-none my-1'
+                disabled={email || password || username || confirmPassword}
               >
                 Create Account
               </button>

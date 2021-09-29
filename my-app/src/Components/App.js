@@ -7,23 +7,16 @@ import '../style.css';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      tagName: null,
-    };
+    this.state = {};
   }
-  handleTagName = (event) => {
-    this.setState({
-      tagName: event,
-    });
-  };
+
   render() {
     return (
       <div>
         <Header />
         <HeroSection />
-        <div className='flex__articles'>
-          <Articles {...this.state} />
-          <TagCloud handleTagName={this.handleTagName} />
+        <div>
+          <Articles />
         </div>
       </div>
     );

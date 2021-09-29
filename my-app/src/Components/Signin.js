@@ -18,8 +18,15 @@ class Signin extends React.Component {
     return re.test(email);
   };
   validatePassword = (password) => {
-    const re = /^(?=.*?[a-z])(?=.*?[0-9]).{6,}$/;
-    return re.test(password);
+    let passwordError;
+    if (password.length < 7) {
+      passwordError = "Password can't be less than 6 characters";
+    }
+    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]/;
+    if (!re.test(password)) {
+      passwordError = 'Password must contain a character and a Number';
+    }
+    return passwordError;
   };
 
   handleInput = ({ target }) => {
@@ -30,9 +37,7 @@ class Signin extends React.Component {
         errors.email = this.validateEmail(value) ? '' : 'Email is not valid!';
         break;
       case 'password':
-        errors.password = this.validatePassword(value)
-          ? 'Password must contain numbers , alphabets and more than six letters'
-          : '';
+        errors.password = this.validatePassword(value);
         break;
       default:
         break;
