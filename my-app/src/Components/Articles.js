@@ -6,6 +6,7 @@ import Pagination from './Pagination';
 import { NavLink } from 'react-router-dom';
 import TagCloud from './TagCloud';
 import { articlesURL } from '../utils/constant';
+
 class Articles extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +14,8 @@ class Articles extends React.Component {
       articlesList: [],
       feed: 'global',
       tagName: null,
+      login: '',
+      store: '',
       // pagination
       articleCount: 0,
       articlesPerPage: 10,
@@ -20,6 +23,7 @@ class Articles extends React.Component {
       error: '',
     };
   }
+
   handleTagName = (event) => {
     this.setState(
       {
@@ -51,6 +55,14 @@ class Articles extends React.Component {
   //     console.log(error);
   //   }
   // };
+  storeCollector = () => {
+    let store = JSON.parse(localStorage.getItem('login'));
+    console.log(store);
+    if (store && store.login) {
+      this.setState({ login: true, store: store });
+    }
+  };
+
   handleFeed = (category) => {
     if (category === 'global') {
       this.setState(
@@ -116,6 +128,7 @@ class Articles extends React.Component {
         articlesList: [],
       });
     }
+    this.storeCollector();
   };
 
   render() {

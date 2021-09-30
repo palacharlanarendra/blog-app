@@ -1,11 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+
 class Signin extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       password: '',
+      AuthenticateError: false,
       errors: {
         email: '',
         password: '',
@@ -44,10 +46,49 @@ class Signin extends React.Component {
     }
     this.setState({ errors, [name]: value });
   };
-  handleSubmit = (event) => {
+
+  handleSubmit = async (event) => {
     event.preventDefault();
-    alert(this.state.email + this.state.password);
+    // const history = useHistory();
+    // Default options are marked with *
+    try {
+      await fetch('https://mighty-oasis-08080.herokuapp.com/api/users/login', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+          user: {
+            email: this.state.email,
+            password: this.state.password,
+          },
+        }),
+      }).then((res) => {
+        res.json().then((result) => {
+          console.log('result', result);
+          localStorage.setItem(
+            'login',
+            JSON.stringify({
+              isLoggedin: true,
+              token: result.user.token,
+            })
+          );
+          // this.storeCollector();
+        });
+      });
+    } catch (error) {
+      this.setState({
+        AuthenticateError: true,
+      });
+    }
+    // alert(this.state.email + this.state.password);
   };
+
   render() {
     let { email, password } = this.state.errors;
     return (
@@ -86,6 +127,7 @@ class Signin extends React.Component {
                 <button
                   type='button'
                   class='transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block'
+                  onClick={this.handleSubmit}
                 >
                   <span class='inline-block mr-2'>Login</span>
                   <svg
@@ -104,6 +146,12 @@ class Signin extends React.Component {
                   </svg>
                 </button>
               </div>
+              {/* {this.state.AuthenticateError ? (
+                <p>Username / Password not existed !</p>
+              ) : (
+                ''
+              )} */}
+              {this.state.isLoggedin ? <p>user loggedin</p> : ''}
               <div class='p-5'>
                 <div class='grid grid-cols-3 gap-1'>
                   <button

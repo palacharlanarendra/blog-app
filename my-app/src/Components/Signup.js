@@ -6,12 +6,10 @@ class Signup extends React.Component {
       email: '',
       password: '',
       username: '',
-      confirmPassword: '',
       errors: {
         email: '',
         password: '',
         username: '',
-        confirmPassword: '',
       },
     };
   }
@@ -55,12 +53,35 @@ class Signup extends React.Component {
     }
     this.setState({ errors, [name]: value });
   };
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    alert(this.state.email + this.state.password);
+    // Default options are marked with *
+    const response = await fetch(
+      'https://mighty-oasis-08080.herokuapp.com/api/users',
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+          user: {
+            username: this.state.username,
+            email: this.state.email,
+            password: this.state.password,
+          },
+        }),
+      }
+    );
+    console.log(response.json());
+    // alert(this.state.email + this.state.password);
   };
   render() {
-    let { email, password, username, confirmPassword } = this.state.errors;
+    let { email, password, username } = this.state.errors;
     return (
       <>
         <div class='bg-grey-lighter min-h-screen flex flex-col'>
@@ -97,21 +118,11 @@ class Signup extends React.Component {
                 placeholder='Password'
               />
               <span>{password}</span>
-              <input
-                value={this.state.confirmPassword}
-                onChange={this.handleInput}
-                type='password'
-                id='confirmPassword'
-                name='confirmPassword'
-                class='block border border-grey-light w-full p-3 rounded mb-4'
-                placeholder='Confirm Password'
-              />
-              <span>{password || confirmPassword}</span>
               <button
                 type='submit'
                 onClick={this.handleSubmit}
                 class='w-full text-center py-3 rounded bg-blue-200 text-black hover:bg-blue-400 focus:outline-none my-1'
-                disabled={email || password || username || confirmPassword}
+                disabled={email || password || username}
               >
                 Create Account
               </button>
