@@ -74,3 +74,12 @@
 .articleSection {
   flex: 0 1 65%;
 }
+.combined__header {
+  display: flex;
+  justify-content: space-between;
+  border: 2px solid green;
+}
+.container {
+  max-width: 1600px;
+  width: 100%;
+}

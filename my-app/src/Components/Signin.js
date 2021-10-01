@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
+import { SIGNIN_URL } from '../utils/constant';
+import { withRouter } from 'react-router';
 class Signin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
-      AuthenticateError: false,
       errors: {
         email: '',
         password: '',
@@ -47,46 +47,53 @@ class Signin extends React.Component {
     this.setState({ errors, [name]: value });
   };
 
-  handleSubmit = async (event) => {
+  handleSubmit = (event) => {
     event.preventDefault();
-    // const history = useHistory();
+    const { email, password } = this.state;
     // Default options are marked with *
-    try {
-      await fetch('https://mighty-oasis-08080.herokuapp.com/api/users/login', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
+    fetch(SIGNIN_URL, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify({
+        user: {
+          email,
+          password,
         },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({
-          user: {
-            email: this.state.email,
-            password: this.state.password,
-          },
-        }),
-      }).then((res) => {
-        res.json().then((result) => {
-          console.log('result', result);
-          localStorage.setItem(
-            'login',
-            JSON.stringify({
-              isLoggedin: true,
-              token: result.user.token,
-            })
-          );
-          // this.storeCollector();
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          return res.json();
+        }
+      })
+      .then(({ user }) => {
+        this.props.updatedUser(user);
+        this.setState({ password: '', email: '' });
+        this.props.history.push('/');
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState((prevState) => {
+          return {
+            ...prevState,
+            errors: {
+              ...prevState.errors,
+              email: 'Email or Password is incorrect!',
+            },
+          };
         });
       });
-    } catch (error) {
-      this.setState({
-        AuthenticateError: true,
-      });
-    }
-    // alert(this.state.email + this.state.password);
   };
 
   render() {
@@ -151,7 +158,7 @@ class Signin extends React.Component {
               ) : (
                 ''
               )} */}
-              {this.state.isLoggedin ? <p>user loggedin</p> : ''}
+              {this.state.isLoggedIn ? <p>user loggedin</p> : ''}
               <div class='p-5'>
                 <div class='grid grid-cols-3 gap-1'>
                   <button
@@ -248,4 +255,4 @@ class Signin extends React.Component {
     );
   }
 }
-export default Signin;
+export default withRouter(Signin);

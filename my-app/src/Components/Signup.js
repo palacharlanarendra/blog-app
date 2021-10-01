@@ -1,7 +1,9 @@
 import React from 'react';
+import { SIGNUP_URL } from '../utils/constant';
+import { withRouter } from 'react-router';
 class Signup extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       password: '',
@@ -53,32 +55,46 @@ class Signup extends React.Component {
     }
     this.setState({ errors, [name]: value });
   };
-  handleSubmit = async (event) => {
+  handleSubmit = (event) => {
     event.preventDefault();
+    const { username, email, password } = this.state;
     // Default options are marked with *
-    const response = await fetch(
-      'https://mighty-oasis-08080.herokuapp.com/api/users',
-      {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
+    fetch(SIGNUP_URL, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify({
+        user: {
+          username,
+          email,
+          password,
         },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({
-          user: {
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password,
-          },
-        }),
-      }
-    );
-    console.log(response.json());
-    // alert(this.state.email + this.state.password);
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          return res.json();
+        }
+      })
+      .then(({ user }) => {
+        this.props.updatedUser(user);
+        this.setState({ username: '', password: '', email: '' });
+        this.props.history.push('/Signin');
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
   };
   render() {
     let { email, password, username } = this.state.errors;
@@ -160,4 +176,4 @@ class Signup extends React.Component {
     );
   }
 }
-export default Signup;
+export default withRouter(Signup);
