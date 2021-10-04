@@ -5,7 +5,7 @@ import '../style.css';
 import Pagination from './Pagination';
 import { NavLink } from 'react-router-dom';
 import TagCloud from './TagCloud';
-import { articlesURL } from '../utils/constant';
+import { articlesURL, FEED_ARTICLES } from '../utils/constant';
 
 class Articles extends React.Component {
   constructor(props) {
@@ -40,28 +40,6 @@ class Articles extends React.Component {
       this.componentDidMount
     );
   };
-  // componentDidMount = async () => {
-  //   try {
-  //     await fetch(
-  //       'https://mighty-oasis-08080.herokuapp.com/api/articles?limit=10'
-  //     )
-  //       .then((res) => res.json())
-  //       .then((data) =>
-  //         this.setState({
-  //           articlesList: [...this.state.articlesList, data],
-  //         })
-  //       );
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  storeCollector = () => {
-    let store = JSON.parse(localStorage.getItem('login'));
-    console.log(store);
-    if (store && store.login) {
-      this.setState({ login: true, store: store });
-    }
-  };
 
   handleFeed = (category) => {
     if (category === 'global') {
@@ -69,6 +47,8 @@ class Articles extends React.Component {
         {
           feed: category,
           tagName: null,
+          articlesList: [],
+          articleIndexPage: 1,
         },
         this.componentDidMount
       );
@@ -76,6 +56,8 @@ class Articles extends React.Component {
       this.setState(
         {
           feed: category,
+          tagName: null,
+          articlesList: [],
           articleIndexPage: 1,
         },
         this.componentDidMount
@@ -87,6 +69,7 @@ class Articles extends React.Component {
       {
         tagName: null,
         feed: 'personal',
+        articlesList: [],
       },
       this.componentDidMount
     );
@@ -99,7 +82,7 @@ class Articles extends React.Component {
         await fetch(
           tagName === null
             ? `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}`
-            : `${articlesURL}/?offset=${offset}&tag=${tagName}`
+            : `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`
         )
           .then((res) => {
             if (!res.ok) {
@@ -113,7 +96,7 @@ class Articles extends React.Component {
               articlesList: [data],
               articleCount: data.articlesCount,
               tagUpdate: this.props.tagName,
-              articleIndexPage: 1,
+              // articleIndexPage: 1,
             })
           );
         console.log(this.state.articleCount);
@@ -124,11 +107,34 @@ class Articles extends React.Component {
       }
     }
     if (this.state.feed === 'personal') {
-      this.setState({
-        articlesList: [],
-      });
+      try {
+        await fetch(
+          tagName === null
+            ? `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}`
+            : `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`
+        )
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(res.statusText);
+            } else {
+              return res.json();
+            }
+          })
+          .then((data) =>
+            this.setState({
+              articlesList: [data],
+              articleCount: data.articlesCount,
+              tagUpdate: this.props.tagName,
+              // articleIndexPage: 1,
+            })
+          );
+        console.log(this.state.articleCount);
+      } catch (error) {
+        this.setState({
+          error: 'Articles are not fetched',
+        });
+      }
     }
-    this.storeCollector();
   };
 
   render() {
@@ -144,9 +150,17 @@ class Articles extends React.Component {
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
                     tagName ? '' : 'active'
                   }`}
+                  onClick={() => this.handleFeed('personal')}
+                >
+                  Your Feed
+                </button>
+                <button
+                  className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
+                    tagName ? '' : 'active'
+                  }`}
                   onClick={() => this.handleFeed('global')}
                 >
-                  Global
+                  Global Feed
                 </button>
 
                 {tagName ? (
@@ -181,6 +195,7 @@ class Articles extends React.Component {
                           src={eachArticle.author.image}
                           alt='profile pic'
                         />
+
                         <p>
                           {eachArticle.author.username} in
                           <span> {eachArticle.tagList[0]}</span>
@@ -191,9 +206,11 @@ class Articles extends React.Component {
                       </span>
                     </div>
                     <div className='md:flex-grow'>
-                      <h2 className='text-2xl font-medium text-gray-900 title-font mb-2'>
-                        {eachArticle.title}
-                      </h2>
+                      <NavLink to={`/articles/${eachArticle.slug}`}>
+                        <h2 className='text-2xl font-medium text-gray-900 title-font mb-2'>
+                          {eachArticle.title}
+                        </h2>
+                      </NavLink>
                       <p className='leading-relaxed'>
                         {eachArticle.description}
                       </p>

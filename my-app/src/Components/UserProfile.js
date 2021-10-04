@@ -6,7 +6,7 @@ import { articlesURL, FEED_ARTICLES } from '../utils/constant';
 import { withRouter } from 'react-router';
 import Loader from './Loader';
 import Pagination from './Pagination';
-class Profile extends React.Component {
+class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -162,11 +162,12 @@ class Profile extends React.Component {
       });
   };
   render() {
+    console.log(this.props.match.params.id);
     let { error, tagName, articlesList, feed } = this.state;
     let { username, bio, image, email } = this.props.user;
     return (
       <>
-        <section className='profile__section'>
+        {/* <section className='profile__section'>
           <div class='rounded-3xl overflow-hidden shadow-xl max-w-xs my-3 bg-white profile__card'>
             <img
               src='https://i.imgur.com/dYcYQ7E.png'
@@ -349,10 +350,10 @@ class Profile extends React.Component {
               </div>
             </div>
           </section>
-        </div>
+        </div> */}
       </>
     );
   }
 }
 
-export default withRouter(Profile);
+export default withRouter(UserProfile);

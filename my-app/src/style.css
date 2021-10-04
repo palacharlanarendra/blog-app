@@ -1,26 +1,21 @@
 .header__icon img {
   width: 15rem;
-  /* border: 2px solid green; */
 }
 .header {
   width: 100%;
   border-bottom: 2px solid grey;
 }
-.hero__section {
-  border: 2px solid green;
-}
+
 .container {
   margin: 0 auto;
 }
 .hero_content div p {
   margin: 2rem 0;
-  /* border: 2px solid grey; */
 }
 
 /* article styles */
 .author__image {
   width: 3rem;
-  /* border: 2px solid grey; */
 }
 .active {
   border-bottom: 2px solid blue;
@@ -41,7 +36,6 @@
 .bouncing-loader > div {
   width: 16px;
   height: 16px;
-  /* margin: 3rem 0.2rem; */
   background: #8385aa;
   border-radius: 50%;
   animation: bouncing-loader 0.6s infinite alternate;
@@ -74,12 +68,99 @@
 .articleSection {
   flex: 0 1 65%;
 }
-.combined__header {
-  display: flex;
-  justify-content: space-between;
-  border: 2px solid green;
-}
-.container {
+
+.main__container {
   max-width: 1600px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+/* Not found styles */
+.notFound {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+}
+/* .profile__card {
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  z-index: -1;
+} */
+.your__articles {
+  position: absolute;
+  top: 70%;
+  left: 0%;
+}
+/* style post */
+.body_md {
+  width: 70%;
+}
+textarea {
+  width: 68%;
+  margin: 1rem;
+  height: 400px !important;
+}
+textarea::-webkit-scrollbar {
+  width: 0 !important;
+}
+.custom-html-style::-webkit-scrollbar {
+  width: 0 !important;
+}
+/* profile section */
+.profile__section {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+@media screen and (max-width: 1024px) {
+  .display {
+    display: block;
+  }
+  .hide {
+    display: none;
+  }
+  .authHeader {
+    width: 100%;
+    height: 100vh;
+    background: rgba(132, 173, 189, 0.897);
+    position: fixed;
+
+    top: -1rem;
+    left: 0;
+  }
+  .navDiv {
+    text-align: center;
+    margin-top: 14rem;
+    color: white !important;
+  }
+  .burger__menu {
+    z-index: 999999;
+    color: black;
+  }
+  .header__icon img {
+    width: 100px !important;
+  }
+  .flex__articles {
+    flex-direction: column;
+  }
+  .profile__card {
+    margin: auto;
+    margin-top: 2rem;
+    position: unset;
+  }
+  .article {
+    flex-direction: column;
+  }
+  .each-one {
+    width: 40%;
+    text-align: center;
+    margin: auto;
+  }
+  .each-one img {
+    margin: auto;
+  }
+  .active {
+    border-bottom: none;
+  }
 }

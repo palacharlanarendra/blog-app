@@ -1,9 +1,9 @@
 import React from 'react';
-import { POST_NEW_ARTICLE } from '../utils/constant';
+import { articlesURL } from '../utils/constant';
 import { withRouter } from 'react-router';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
-class NewPost extends React.Component {
+class UpdateArticle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,6 +11,8 @@ class NewPost extends React.Component {
       description: '',
       body: '',
       tagList: '',
+      totalCount: 0,
+      articleList: [],
       errors: {
         title: '',
         description: '',
@@ -44,7 +46,6 @@ class NewPost extends React.Component {
         break;
       case 'description':
         errors.description = this.validateField(value);
-
         break;
       case 'body':
         errors.body = this.validateBody(value);
@@ -57,13 +58,14 @@ class NewPost extends React.Component {
     }
     this.setState({ errors, [name]: value });
   };
+
   handleSubmit = (event) => {
     event.preventDefault();
     const { title, description, body, tagList } = this.state;
     // Default options are marked with *
     let storageKey = localStorage['app__user'];
-    fetch(POST_NEW_ARTICLE, {
-      method: 'POST',
+    fetch(articlesURL + '/' + this.props.match.params.slug, {
+      method: 'PUT',
       mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
@@ -89,6 +91,7 @@ class NewPost extends React.Component {
           });
         } else {
           return res.json();
+          // console.log('respo', res);
         }
       })
       .then(({ article }) => {
@@ -109,12 +112,25 @@ class NewPost extends React.Component {
   clearEditor = ({ html, text }) => {
     return (html = '');
   };
-  componentDidMount = () => {
-    console.log('comp', this.props.user.username, this.props.user.email);
-    this.setState({
-      username: this.props.user.username,
-      email: this.props.user.email,
-    });
+  componentDidMount = async () => {
+    console.log('inside', this.props.match.params.slug);
+    try {
+      await fetch(
+        'https://mighty-oasis-08080.herokuapp.com/api/articles/' +
+          this.props.match.params.slug
+      )
+        .then((res) => res.json())
+        .then((data) =>
+          this.setState({
+            title: data.article.title,
+            description: data.article.description,
+            body: data.article.body,
+            tagList: data.article.tagList,
+          })
+        );
+    } catch (error) {
+      console.log(error);
+    }
   };
   render() {
     let { title, description, body, tagList } = this.state.errors;
@@ -159,6 +175,7 @@ class NewPost extends React.Component {
                 onSubmit={this.clearEditor}
                 id='body'
                 name='body'
+                value={this.state.body}
               />
               <span>{body}</span>
               <div className="">
@@ -180,7 +197,7 @@ class NewPost extends React.Component {
                   class='w-1/12 m-2 text-center py-3 h-12 block rounded bg-blue-200 text-white font-extrabold  hover:bg-blue-400 focus:outline-none '
                   disabled={title || description || body || tagList}
                 >
-                  Post 
+                  Update Post 
                 </button>
               </div>
               <div class='text-center text-sm text-grey-dark mt-4'>
@@ -217,4 +234,4 @@ class NewPost extends React.Component {
     );
   }
 }
-export default withRouter(NewPost);
+export default withRouter(UpdateArticle);

@@ -12,7 +12,12 @@ function Pagination(props) {
         {pageNum.map((eachNum) => (
           <button
             onClick={() => props.handlePage(eachNum)}
-            className='flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200'
+            // className='flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200'
+            className={
+              eachNum === articleIndexPage
+                ? 'flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-green-600 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200 '
+                : 'flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200'
+            }
           >
             {eachNum}
           </button>

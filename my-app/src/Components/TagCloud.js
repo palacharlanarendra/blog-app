@@ -38,12 +38,6 @@ class TagCloud extends React.Component {
     return (
       <>
         <section className='allTags'>
-          <div
-            class=' text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-white-200 text-gray-500 rounded border-2 border-gray-500 '
-            onClick={this.props.handleFilterReset}
-          >
-            RESET FILTERS
-          </div>
           {error ? <p>{error}</p> : ''}
           {this.state.tagsList.length === 0 && !error ? <Loader /> : ''}
           {this.state.tagsList[0]?.tags.map((eachTag) =>

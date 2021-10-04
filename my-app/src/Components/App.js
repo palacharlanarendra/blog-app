@@ -12,13 +12,15 @@ import FullPageSpinner from './FullPageSpinner';
 import Settings from './Settings';
 import NewPost from './NewPost';
 import Profile from './Profile';
-
+import UpdateArticle from './UpdateArticle';
+import UserProfile from './UserProfile';
 class App extends React.Component {
   state = {
     isLoggedIn: false,
     user: null,
     isVerifying: true,
   };
+
   Signout = () => {
     this.setState({ isLoggedIn: false, user: null, isVerifying: true });
     console.log('signout');
@@ -27,6 +29,27 @@ class App extends React.Component {
   };
   componentDidMount = () => {
     let storageKey = localStorage['app__user'];
+    if (storageKey) {
+      fetch(USER_VERIFY_URL, {
+        method: 'GET',
+        headers: {
+          authorization: `Token ${storageKey}`,
+        },
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        })
+        .then(({ user }) => this.updatedUser(user))
+        .catch((errors) => console.log(errors));
+    } else {
+      this.setState({ isVerifying: false });
+    }
+
     if (storageKey) {
       fetch(USER_VERIFY_URL, {
         method: 'GET',
@@ -61,7 +84,7 @@ class App extends React.Component {
         <Router>
           <Header isLoggedIn={this.state.isLoggedIn} Signout={this.Signout} />
           {this.state.isLoggedIn ? (
-            <AuthenticatedApp />
+            <AuthenticatedApp user={this.state.user} />
           ) : (
             <UnAuthenticatedApp updatedUser={this.updatedUser} />
           )}
@@ -83,31 +106,36 @@ function UnAuthenticatedApp(props) {
       <Route path='/signup' exact>
         <Signup updatedUser={props.updatedUser} />
       </Route>
+      <Route exact path='/profiles/:username' component={UserProfile} />
       <Route path='/articles/:slug' component={SingleArticle} />
-      <Route path='*' exact={true} component={NotFound} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
-function AuthenticatedApp() {
+function AuthenticatedApp(props) {
   return (
     <Switch>
       <Route path='/' exact>
         <Home />
       </Route>
       <Route path='/articles/:slug' component={SingleArticle} />
-      <Route path='/new-post'>
-        <NewPost />
+      <Route path='/newpost' exact>
+        <NewPost user={props.user} />
       </Route>
-      <Route path='/settings'>
-        <Settings />
+      <Route path='/settings' exact>
+        <Settings user={props.user} />
       </Route>
-      <Route path='/profile'>
-        <Profile />
+      <Route path='/updateArticles' exact>
+        <UpdateArticle user={props.user} />
       </Route>
-      {/* <Route path='*'>
-        <NotFound />
-      </Route> */}
-      <Route path='*' exact={true} component={NotFound} />
+      <Route path='/profile' exact>
+        <Profile user={props.user} />
+      </Route>
+      <Route exact path='/profiles/:username' component={UserProfile} />
+      <Route path='/edit/articles/:slug' exact>
+        <UpdateArticle user={props.user} />
+      </Route>
+      <Route component={NotFound} />
     </Switch>
   );
 }

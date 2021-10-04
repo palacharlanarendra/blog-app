@@ -1,4 +1,5 @@
 import React from 'react';
+import {NavLink} from 'react-router-dom'
 
 function HeroSection() {
   return (
@@ -15,9 +16,11 @@ function HeroSection() {
                   It's easy and free to post your thinking on any topic and
                   connect with millions of readers.
                 </p>
-                <button class='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-lg shadow'>
-                  Start Writing
-                </button>
+                <NavLink to="/newpost">
+                  <button class='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-lg shadow'>
+                    Start Writing
+                  </button>
+                </NavLink>
               </div>
             </div>
             <div class='flex items-center justify-center'>

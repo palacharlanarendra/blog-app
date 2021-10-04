@@ -1,6 +1,7 @@
 import React from 'react';
 import { SIGNUP_URL } from '../utils/constant';
 import { withRouter } from 'react-router';
+import { NavLink } from 'react-router-dom';
 class Signup extends React.Component {
   constructor(props) {
     super(props);
@@ -113,27 +114,27 @@ class Signup extends React.Component {
                 name='username'
                 placeholder='User Name'
               />
-              <span>{username}</span>
+              <span className="text-red-500 block my-2">{username}</span>
               <input
                 value={this.state.email}
                 onChange={this.handleInput}
                 type='text'
                 id='email'
-                class='block border border-grey-light w-full p-3 rounded mb-4'
+                class='block border border-grey-light w-full p-3 rounded '
                 name='email'
                 placeholder='Email'
               />
-              <span>{email}</span>
+              <span className="text-red-500 block my-2">{email}</span>
               <input
                 value={this.state.password}
                 onChange={this.handleInput}
                 type='password'
                 id='password'
                 name='password'
-                class='block border border-grey-light w-full p-3 rounded mb-4'
+                class='block border border-grey-light w-full p-3 rounded '
                 placeholder='Password'
               />
-              <span>{password}</span>
+              <span className="text-red-500 block my-2">{password}</span>
               <button
                 type='submit'
                 onClick={this.handleSubmit}
@@ -142,32 +143,24 @@ class Signup extends React.Component {
               >
                 Create Account
               </button>
-              <div class='text-center text-sm text-grey-dark mt-4'>
+              <div class='text-center text-sm text-grey-dark '>
                 By signing up, you agree to the
-                <a
-                  class='no-underline border-b border-grey-dark text-grey-dark'
-                  href='#'
-                >
+                
                   Terms of Service
-                </a>{' '}
                 and
-                <a
-                  class='no-underline border-b border-grey-dark text-grey-dark'
-                  href='#'
-                >
-                  Privacy Policy
-                </a>
+               
+                Privacy Policy
+
               </div>
             </div>
 
             <div class='text-grey-dark mt-6'>
               Already have an account?
-              <a
+              <NavLink to="/signin"
                 class='no-underline border-b border-blue text-blue'
-                href='../login/'
               >
-                Log in
-              </a>
+                {' '} Log in
+              </NavLink>
               .
             </div>
           </div>
