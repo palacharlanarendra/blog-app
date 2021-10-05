@@ -9,6 +9,7 @@ const USER_VERIFY_URL = ROOT_URL + 'user';
 const POST_NEW_ARTICLE = ROOT_URL + 'articles';
 const UPDATE_PROFILE = ROOT_URL + 'user';
 const FEED_ARTICLES = articlesURL + '/feed';
+const USER_PROFILES = ROOT_URL + 'profiles/';
 export {
   ROOT_URL,
   articlesURL,
@@ -19,4 +20,5 @@ export {
   POST_NEW_ARTICLE,
   UPDATE_PROFILE,
   FEED_ARTICLES,
+  USER_PROFILES,
 };

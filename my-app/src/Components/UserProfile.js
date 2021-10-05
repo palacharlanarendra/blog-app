@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
-import { articlesURL, FEED_ARTICLES } from '../utils/constant';
+import { articlesURL, FEED_ARTICLES, USER_PROFILES } from '../utils/constant';
 import { withRouter } from 'react-router';
 import Loader from './Loader';
 import Pagination from './Pagination';
@@ -11,12 +11,14 @@ class UserProfile extends React.Component {
     super(props);
     this.state = {
       articlesList: [],
+      userProfile: {},
       tagName: null,
       feed: 'global',
       login: '',
       store: '',
       // pagination
       articleCount: 0,
+      userArticleCount: 0,
       articlesPerPage: 10,
       articleIndexPage: 1,
       error: '',
@@ -72,8 +74,33 @@ class UserProfile extends React.Component {
     if (storageKey) {
       if (this.state.feed === 'global') {
         try {
+          await fetch(`${USER_PROFILES}${this.props.match.params.username}`, {
+            method: 'GET',
+            headers: {
+              authorization: `Token ${storageKey}`,
+            },
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error(res.statusText);
+              } else {
+                return res.json();
+              }
+            })
+            .then((data) =>
+              this.setState({
+                userProfile: data,
+              })
+            );
+        } catch (error) {
+          this.setState({
+            error: 'Articles are not fetched',
+          });
+        }
+
+        try {
           await fetch(
-            `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}`,
+            `${articlesURL}/?favorited=${this.props.match.params.username}`,
             {
               method: 'GET',
               headers: {
@@ -88,10 +115,12 @@ class UserProfile extends React.Component {
                 return res.json();
               }
             })
-            .then((data) =>
-              this.setState({
-                articlesList: [data],
-              })
+            .then(
+              (data) =>
+                this.setState({
+                  articlesList: [data],
+                })
+              // console.log(data)
             );
         } catch (error) {
           this.setState({
@@ -103,7 +132,7 @@ class UserProfile extends React.Component {
         try {
           await fetch(
             'https://mighty-oasis-08080.herokuapp.com/api/articles?author=' +
-              this.props.user.username
+              this.props.match.params.username
           )
             .then((res) => {
               if (!res.ok) {
@@ -120,7 +149,7 @@ class UserProfile extends React.Component {
                   tagUpdate: this.props.tagName,
                   articleIndexPage: 1,
                 })
-              // console.log(data)
+              // console.log('hello', data.articlesCount)
             );
           console.log(this.state.articleCount);
         } catch (error) {
@@ -162,12 +191,15 @@ class UserProfile extends React.Component {
       });
   };
   render() {
-    console.log(this.props.match.params.id);
-    let { error, tagName, articlesList, feed } = this.state;
+    // console.log('id', this.props.match.params.username);
+    let userUniqueName = this.props.match.params.username;
+    let { error, tagName, articlesList, feed, userProfile, articleCount } =
+      this.state;
     let { username, bio, image, email } = this.props.user;
+    const { profile } = userProfile;
     return (
       <>
-        {/* <section className='profile__section'>
+        <section className='profile__section'>
           <div class='rounded-3xl overflow-hidden shadow-xl max-w-xs my-3 bg-white profile__card'>
             <img
               src='https://i.imgur.com/dYcYQ7E.png'
@@ -176,24 +208,26 @@ class UserProfile extends React.Component {
             />
             <div class='flex justify-center -mt-8'>
               <img
-                src={image}
+                src={profile?.image}
                 class='rounded-full border-solid border-white border-2 -mt-3 max-h-25'
                 alt='profile'
               />
             </div>
             <div class='text-center px-3 pb-6 pt-2'>
-              <h3 class='text-black text-sm bold font-sans'>{username}</h3>
+              <h3 class='text-black text-sm bold font-sans'>
+                {profile?.username}
+              </h3>
               <h4 class='mt-2 font-sans font-light text-sm bold text-black'>
-                {bio}
+                {profile?.bio}
               </h4>
-              <p class='mt-2 font-sans font-light text-black'>{email}</p>
+              <p class='mt-2 font-sans font-light text-black'>
+                {profile?.email}
+              </p>
             </div>
             <div class='flex justify-center pb-3 text-black'>
               <div class='text-center mr-3 border-r pr-3'>
                 <h2>
-                  {this.state?.articlesList
-                    ? this.state?.articlesList.length
-                    : 0}
+                  {this.state?.articleCount ? this.state?.articleCount : 0}
                 </h2>
                 <span>Articles</span>
               </div>
@@ -215,7 +249,7 @@ class UserProfile extends React.Component {
                   }`}
                   onClick={() => this.handleFeed('personal')}
                 >
-                  Your Articles
+                  My Articles
                 </button>
                 <button
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
@@ -223,7 +257,7 @@ class UserProfile extends React.Component {
                   }`}
                   onClick={() => this.handleFeed('global')}
                 >
-                  Your Feed
+                  Favorited Articles
                 </button>
 
                 {tagName ? (
@@ -297,7 +331,7 @@ class UserProfile extends React.Component {
                           </svg>
                         </button>
                       </NavLink>
-                      {feed === 'personal' ? (
+                      {userUniqueName === username && feed === 'personal' ? (
                         <NavLink to={`/edit/articles/${eachArticle.slug}`}>
                           <button className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 m-2 border rounded-md'>
                             Edit
@@ -318,7 +352,7 @@ class UserProfile extends React.Component {
                       ) : (
                         ''
                       )}
-                      {feed === 'personal' ? (
+                      {userUniqueName === username && feed === 'personal' ? (
                         <button
                           className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
                           onClick={() => this.handleDelete(eachArticle.slug)}
@@ -350,7 +384,7 @@ class UserProfile extends React.Component {
               </div>
             </div>
           </section>
-        </div> */}
+        </div>
       </>
     );
   }

@@ -195,11 +195,14 @@ class Articles extends React.Component {
                           src={eachArticle.author.image}
                           alt='profile pic'
                         />
-
-                        <p>
-                          {eachArticle.author.username} in
-                          <span> {eachArticle.tagList[0]}</span>
-                        </p>
+                        <NavLink
+                          to={`/profiles/${eachArticle.author.username}`}
+                        >
+                          <p>
+                            {eachArticle.author.username} in
+                            <span> {eachArticle.tagList[0]}</span>
+                          </p>
+                        </NavLink>
                       </span>
                       <span className='mt-1 text-gray-500 text-sm'>
                         {moment(eachArticle?.updatedAt).format('MMM Do YY')}

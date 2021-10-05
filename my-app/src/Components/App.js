@@ -131,7 +131,9 @@ function AuthenticatedApp(props) {
       <Route path='/profile' exact>
         <Profile user={props.user} />
       </Route>
-      <Route exact path='/profiles/:username' component={UserProfile} />
+      <Route path='/profiles/:username' exact>
+        <UserProfile user={props.user} />
+      </Route>
       <Route path='/edit/articles/:slug' exact>
         <UpdateArticle user={props.user} />
       </Route>
@@ -140,3 +142,4 @@ function AuthenticatedApp(props) {
   );
 }
 export default App;
+
