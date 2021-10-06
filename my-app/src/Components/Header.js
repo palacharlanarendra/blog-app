@@ -25,7 +25,7 @@ class Header extends React.Component {
               <div>
                 <a class='text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300'>
                   <NavLink to='/' className='header__icon'>
-                    <img src='./images/medium.svg' alt='medium logo' />
+                    <img src='/images/medium.svg' alt='medium logo' />
                   </NavLink>
                 </a>
               </div>
@@ -71,9 +71,7 @@ function NonAuthHeader() {
       >
         Home
       </NavLink>
-      
 
-      
       <NavLink
         activeclassName='active'
         to='/signin'
@@ -93,44 +91,44 @@ function NonAuthHeader() {
 }
 function AuthHeader(props) {
   return (
-    <div className="authHeader">
+    <div className='authHeader'>
       <div class='flex flex-col mt-4 space-y-8 lg:flex-row lg:items-center lg:mt-0 lg:space-y-0 lg:space-x-16 navDiv'>
-      <NavLink
-        activeclassName='active'
-        to='/'
-        className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
-      >
-        Home
-      </NavLink>
-      <NavLink
-        activeclassName='active'
-        to='/newpost'
-        className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
-      >
-        Write a story
-      </NavLink>
+        <NavLink
+          activeclassName='active'
+          to='/'
+          className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+        >
+          Home
+        </NavLink>
+        <NavLink
+          activeclassName='active'
+          to='/newpost'
+          className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+        >
+          Write a story
+        </NavLink>
 
-      <NavLink
-        activeclassName='active'
-        to='/settings'
-        className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
-      >
-        Settings
-      </NavLink>
-      <NavLink
-        activeclassName='active'
-        to='/profile'
-        className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
-      >
-        Profile
-      </NavLink>
-      <div
-        className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
-        onClick={props.Signout}
-      >
-        SignOut
+        <NavLink
+          activeclassName='active'
+          to='/settings'
+          className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+        >
+          Settings
+        </NavLink>
+        <NavLink
+          activeclassName='active'
+          to='/profile'
+          className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+        >
+          Profile
+        </NavLink>
+        <div
+          className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
+          onClick={props.Signout}
+        >
+          SignOut
+        </div>
       </div>
-    </div>
     </div>
   );
 }

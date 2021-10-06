@@ -10,6 +10,7 @@ const POST_NEW_ARTICLE = ROOT_URL + 'articles';
 const UPDATE_PROFILE = ROOT_URL + 'user';
 const FEED_ARTICLES = articlesURL + '/feed';
 const USER_PROFILES = ROOT_URL + 'profiles/';
+
 export {
   ROOT_URL,
   articlesURL,

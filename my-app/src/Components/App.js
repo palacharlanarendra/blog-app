@@ -107,7 +107,9 @@ function UnAuthenticatedApp(props) {
         <Signup updatedUser={props.updatedUser} />
       </Route>
       <Route exact path='/profiles/:username' component={UserProfile} />
-      <Route path='/articles/:slug' component={SingleArticle} />
+      <Route path='/articles/:slug'>
+        <SingleArticle />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
@@ -118,7 +120,9 @@ function AuthenticatedApp(props) {
       <Route path='/' exact>
         <Home />
       </Route>
-      <Route path='/articles/:slug' component={SingleArticle} />
+      <Route path='/articles/:slug'>
+        <SingleArticle user={props.user} />
+      </Route>
       <Route path='/newpost' exact>
         <NewPost user={props.user} />
       </Route>
@@ -142,4 +146,3 @@ function AuthenticatedApp(props) {
   );
 }
 export default App;
-

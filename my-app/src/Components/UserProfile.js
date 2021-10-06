@@ -2,7 +2,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
-import { articlesURL, FEED_ARTICLES, USER_PROFILES } from '../utils/constant';
+import {
+  articlesURL,
+  FEED_ARTICLES,
+  USER_PROFILES,
+  ROOT_URL,
+} from '../utils/constant';
 import { withRouter } from 'react-router';
 import Loader from './Loader';
 import Pagination from './Pagination';
@@ -190,6 +195,64 @@ class UserProfile extends React.Component {
         this.setState({ errors });
       });
   };
+  handleFollow = (username) => {
+    let storageKey = localStorage['app__user'];
+    fetch(ROOT_URL + `profiles/${username}/follow`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // this.props.history.push(`/`);
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
+  handleUnFollow = (username) => {
+    let storageKey = localStorage['app__user'];
+    fetch(ROOT_URL + `profiles/${username}/follow`, {
+      method: 'DELETE',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // this.props.history.push(`/`);
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
   render() {
     // console.log('id', this.props.match.params.username);
     let userUniqueName = this.props.match.params.username;
@@ -236,6 +299,46 @@ class UserProfile extends React.Component {
                 <span>Followers</span>
               </div>
             </div>
+            <button
+              className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
+              onClick={() =>
+                this.handleFollow(this.props.match.params.username)
+              }
+            >
+              Follow
+              <svg
+                className='w-4 h-4 ml-2'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+                stroke-width='2'
+                fill='none'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+              >
+                <path d='M5 12h14'></path>
+                <path d='M12 5l7 7-7 7'></path>
+              </svg>
+            </button>
+            <button
+              className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
+              onClick={() =>
+                this.handleUnFollow(this.props.match.params.username)
+              }
+            >
+              Unfollow
+              <svg
+                className='w-4 h-4 ml-2'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+                stroke-width='2'
+                fill='none'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+              >
+                <path d='M5 12h14'></path>
+                <path d='M12 5l7 7-7 7'></path>
+              </svg>
+            </button>
           </div>
         </section>
 

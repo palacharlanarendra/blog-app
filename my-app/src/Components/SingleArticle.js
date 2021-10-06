@@ -1,6 +1,10 @@
 import React from 'react';
+import { withRouter, NavLink } from 'react-router-dom';
 import moment from 'moment';
 import Loader from './Loader';
+import NewComment from './NewComment';
+import CommentList from './CommentList';
+import { articlesURL } from '../utils/constant';
 class SingleArticle extends React.Component {
   constructor(props) {
     super(props);
@@ -33,8 +37,67 @@ class SingleArticle extends React.Component {
       });
     }
   };
+  handleFavorite = (slug) => {
+    let storageKey = localStorage['app__user'];
+    fetch(articlesURL + `/${slug}/favorite`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // window.location.reload();
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
+  handleUnFavorite = (slug) => {
+    let storageKey = localStorage['app__user'];
+    fetch(articlesURL + `/${slug}/favorite`, {
+      method: 'DELETE',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // window.location.reload();
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
   render() {
-    console.log(this.state.singleArticle[0]?.article.author.image);
+    // console.log(this.state.singleArticle[0]?.article.author.image);
+    console.log('props', this.props);
     let { error } = this.state;
     return (
       <>
@@ -45,6 +108,18 @@ class SingleArticle extends React.Component {
               'MMM Do YY'
             )}
           </p>
+          <strong
+            onClick={() => this.handleFavorite(this.props.match.params.slug)}
+            className='like__image'
+          >
+            <img src='/images/heart.svg' alt='like button' />
+          </strong>
+          <strong
+            onClick={() => this.handleUnFavorite(this.props.match.params.slug)}
+            className='like__image'
+          >
+            <img src='/images/heart.svg' alt='like button' />
+          </strong>
           <div className='max-w-xl mb-5 md:mx-auto sm:text-center lg:max-w-2xl'>
             <div className='mb-4'>
               <a
@@ -89,10 +164,27 @@ class SingleArticle extends React.Component {
               {this.state.singleArticle[0]?.article?.body}
             </a>
           </div>
+
+          {this.props?.user?.username ? (
+            <NewComment slug={this.props.match.params.slug} />
+          ) : (
+            <div class='flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800'>
+              <div class='px-4 py-2 -mx-3'>
+                <div class='mx-3'>
+                  <p class='text-sm text-gray-600 dark:text-gray-200'>
+                    <NavLink to='/signin'>Sign-in</NavLink> or{' '}
+                    <NavLink to='/signup'>Sign-up</NavLink> to comment on this
+                    article
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <CommentList slug={this.props.match.params.slug} />
         </section>
       </>
     );
   }
 }
 
-export default SingleArticle;
+export default withRouter(SingleArticle);

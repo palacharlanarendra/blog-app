@@ -74,7 +74,66 @@ class Articles extends React.Component {
       this.componentDidMount
     );
   };
+  handleFavorite = (slug) => {
+    let storageKey = localStorage['app__user'];
+    fetch(articlesURL + `/${slug}/favorite`, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // window.location.reload();
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
+  handleUnFavorite = (slug) => {
+    let storageKey = localStorage['app__user'];
+    fetch(articlesURL + `/${slug}/favorite`, {
+      method: 'DELETE',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Token ${storageKey}`,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          console.log(res.json());
+          // window.location.reload();
+        }
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
   componentDidMount = async () => {
+    let storageKey = localStorage['app__user'];
     let { articlesPerPage, articleIndexPage, tagName } = this.state;
     let offset = (articleIndexPage - 1) * 10;
     if (this.state.feed === 'global') {
@@ -82,7 +141,13 @@ class Articles extends React.Component {
         await fetch(
           tagName === null
             ? `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}`
-            : `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`
+            : `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`,
+          {
+            method: 'GET',
+            headers: {
+              authorization: `Token ${storageKey}`,
+            },
+          }
         )
           .then((res) => {
             if (!res.ok) {
@@ -91,13 +156,15 @@ class Articles extends React.Component {
               return res.json();
             }
           })
-          .then((data) =>
-            this.setState({
-              articlesList: [data],
-              articleCount: data.articlesCount,
-              tagUpdate: this.props.tagName,
-              // articleIndexPage: 1,
-            })
+          .then(
+            (data) =>
+              this.setState({
+                articlesList: [data],
+                articleCount: data.articlesCount,
+                tagUpdate: this.props.tagName,
+                // articleIndexPage: 1,
+              })
+            // console.log('global', data)
           );
         console.log(this.state.articleCount);
       } catch (error) {
@@ -111,7 +178,13 @@ class Articles extends React.Component {
         await fetch(
           tagName === null
             ? `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}`
-            : `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`
+            : `${FEED_ARTICLES}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`,
+          {
+            method: 'GET',
+            headers: {
+              authorization: `Token ${storageKey}`,
+            },
+          }
         )
           .then((res) => {
             if (!res.ok) {
@@ -120,13 +193,15 @@ class Articles extends React.Component {
               return res.json();
             }
           })
-          .then((data) =>
-            this.setState({
-              articlesList: [data],
-              articleCount: data.articlesCount,
-              tagUpdate: this.props.tagName,
-              // articleIndexPage: 1,
-            })
+          .then(
+            (data) =>
+              this.setState({
+                articlesList: [data],
+                articleCount: data.articlesCount,
+                tagUpdate: this.props.tagName,
+                // articleIndexPage: 1,
+              })
+            // console.log('personal', data)
           );
         console.log(this.state.articleCount);
       } catch (error) {
@@ -139,7 +214,7 @@ class Articles extends React.Component {
 
   render() {
     let { error, tagName, articlesList } = this.state;
-
+    console.log('articleslist', articlesList);
     return (
       <>
         <div className='flex__articles'>
@@ -217,9 +292,19 @@ class Articles extends React.Component {
                       <p className='leading-relaxed'>
                         {eachArticle.description}
                       </p>
-                      <strong className='like__image'>
-                        <img src='./images/heart.svg' alt='like button' />
+                      <strong
+                        onClick={() => this.handleFavorite(eachArticle.slug)}
+                        className='like__image'
+                      >
+                        <img src='/images/heart.svg' alt='like button' />
                       </strong>
+                      <strong
+                        onClick={() => this.handleUnFavorite(eachArticle.slug)}
+                        className='like__image'
+                      >
+                        <img src='/images/heart.svg' alt='like button' />
+                      </strong>
+                      <p>{eachArticle.favoritesCount}</p>
                       <NavLink to={`/articles/${eachArticle.slug}`}>
                         <button className='text-indigo-500 inline-flex items-center mt-4'>
                           Read More
