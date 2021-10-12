@@ -89,13 +89,11 @@ class Profile extends React.Component {
                 return res.json();
               }
             })
-            .then(
-              (data) =>
-                this.setState({
-                  articlesList: [data],
-                  feedCount: data.articles.length,
-                })
-              // console.log(data)
+            .then((data) =>
+              this.setState({
+                articlesList: [data],
+                feedCount: data.articles.length,
+              })
             );
         } catch (error) {
           this.setState({
@@ -116,17 +114,14 @@ class Profile extends React.Component {
                 return res.json();
               }
             })
-            .then(
-              (data) =>
-                this.setState({
-                  articlesList: [data],
-                  articleCount: data.articlesCount,
-                  tagUpdate: this.props.tagName,
-                  articleIndexPage: 1,
-                })
-              // console.log(data)
+            .then((data) =>
+              this.setState({
+                articlesList: [data],
+                articleCount: data.articlesCount,
+                tagUpdate: this.props.tagName,
+                articleIndexPage: 1,
+              })
             );
-          console.log(this.state.articleCount);
         } catch (error) {
           this.setState({
             error: 'Articles are not fetched',
@@ -136,7 +131,6 @@ class Profile extends React.Component {
     }
   };
   handleDelete = (slug) => {
-    console.log('slug', slug);
     let storageKey = localStorage['app__user'];
     fetch(articlesURL + '/' + slug, {
       method: 'DELETE',
@@ -156,12 +150,10 @@ class Profile extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res);
           this.props.history.push(`/`);
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };

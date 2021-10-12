@@ -91,16 +91,13 @@ class UpdateArticle extends React.Component {
           });
         } else {
           return res.json();
-          // console.log('respo', res);
         }
       })
       .then(({ article }) => {
         this.setState({ title: '', description: '', body: '', tagList: '' });
         this.props.history.push(`/articles/${article.slug}`);
-        console.log(article);
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -113,7 +110,6 @@ class UpdateArticle extends React.Component {
     return (html = '');
   };
   componentDidMount = async () => {
-    console.log('inside', this.props.match.params.slug);
     try {
       await fetch(
         'https://mighty-oasis-08080.herokuapp.com/api/articles/' +
@@ -128,9 +124,7 @@ class UpdateArticle extends React.Component {
             tagList: data.article.tagList,
           })
         );
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   render() {
     let { title, description, body, tagList } = this.state.errors;
@@ -168,8 +162,8 @@ class UpdateArticle extends React.Component {
                 </div>
               </div>
               <MdEditor
-                className="markEditor "
-                style={{ height: '500px', overflowY : "scroll"  }}
+                className='markEditor '
+                style={{ height: '500px', overflowY: 'scroll' }}
                 renderHTML={(text) => mdParser.render(text)}
                 onChange={this.handleEditorChange}
                 onSubmit={this.clearEditor}
@@ -178,7 +172,7 @@ class UpdateArticle extends React.Component {
                 value={this.state.body}
               />
               <span>{body}</span>
-              <div className="">
+              <div className=''>
                 <div className='w-4/12 m-3'>
                   <input
                     value={this.state.tagList}
@@ -197,7 +191,7 @@ class UpdateArticle extends React.Component {
                   class='w-1/12 m-2 text-center py-3 h-12 block rounded bg-blue-200 text-white font-extrabold  hover:bg-blue-400 focus:outline-none '
                   disabled={title || description || body || tagList}
                 >
-                  Update Post 
+                  Update Post
                 </button>
               </div>
               <div class='text-center text-sm text-grey-dark mt-4'>

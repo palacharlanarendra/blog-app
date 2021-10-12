@@ -1,8 +1,6 @@
 import React from 'react';
 function FeedPagination(props) {
   let { FeedArticleCount, FeedArticlesPerPage, FeedArticleIndexPage } = props;
-
-  console.log(FeedArticleCount, FeedArticlesPerPage, FeedArticleIndexPage);
   let totalPages = Math.ceil(FeedArticleCount / FeedArticlesPerPage);
   let pageNum = Array.from({ length: totalPages }, (_, i) => i + 1);
   return (

@@ -148,18 +148,15 @@ class UserProfile extends React.Component {
                 return res.json();
               }
             })
-            .then(
-              (data) =>
-                this.setState({
-                  articlesList: [data],
-                  articleCount: data.articlesCount,
-                  tagUpdate: this.props.tagName,
-                  articleIndexPage: 1,
-                  favArticlesList: [],
-                })
-              // console.log('hello', data)
+            .then((data) =>
+              this.setState({
+                articlesList: [data],
+                articleCount: data.articlesCount,
+                tagUpdate: this.props.tagName,
+                articleIndexPage: 1,
+                favArticlesList: [],
+              })
             );
-          console.log(this.state.articleCount);
         } catch (error) {
           this.setState({
             error: 'Articles are not fetched',
@@ -169,7 +166,6 @@ class UserProfile extends React.Component {
     }
   };
   handleDelete = (slug) => {
-    console.log('slug', slug);
     let storageKey = localStorage['app__user'];
     fetch(articlesURL + '/' + slug, {
       method: 'DELETE',
@@ -189,12 +185,10 @@ class UserProfile extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res);
           this.props.history.push(`/`);
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -218,12 +212,10 @@ class UserProfile extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log('xxxxxxxxxx', res.json());
           this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -247,32 +239,19 @@ class UserProfile extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res.json());
           this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
   render() {
-    // console.log('id', this.props.match.params.username);
     let userUniqueName = this.props.match.params.username;
-    let {
-      error,
-      tagName,
-      articlesList,
-      feed,
-      userProfile,
-      articleCount,
-      following,
-      favArticlesList,
-    } = this.state;
-    let { username, bio, image, email } = this.props.user;
+    let { error, tagName, articlesList, feed, userProfile, favArticlesList } =
+      this.state;
+    let { username } = this.props.user;
     const { profile } = userProfile;
-    console.log('hello telogoda', favArticlesList);
-    console.log('yyyyyyyyy', articlesList);
     return (
       <>
         <section className='profile__section'>

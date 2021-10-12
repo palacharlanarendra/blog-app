@@ -7,10 +7,7 @@ class CommentList extends React.Component {
       commentsArray: [],
     };
   }
-
   render() {
-    console.log('properties', this.props);
-    // console.log('comment list', this.state?.commentsArray);
     return (
       <>
         {this.props.commentsArray?.map((comment) => (

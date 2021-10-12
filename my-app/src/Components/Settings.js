@@ -113,15 +113,12 @@ class Settings extends React.Component {
           password: '',
         });
         this.props.history.push(`/`);
-        console.log('article updated', user);
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
   componentDidMount = () => {
-    console.log('comp', this.props.user.email, this.props.user.username);
     this.setState({
       username: this.props.user.username,
       email: this.props.user.email,
@@ -131,7 +128,6 @@ class Settings extends React.Component {
     });
   };
   render() {
-    console.log('arey user', this.props.user);
     let { image, username, bio, email, password } = this.state.errors;
 
     return (

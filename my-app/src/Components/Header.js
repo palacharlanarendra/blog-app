@@ -11,7 +11,6 @@ class Header extends React.Component {
     };
   }
   hideTheNav = () => {
-    console.log('wow');
     this.setState({
       navVisible: this.state.navVisible ? false : true,
     });

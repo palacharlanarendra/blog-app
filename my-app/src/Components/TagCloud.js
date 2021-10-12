@@ -34,7 +34,6 @@ class TagCloud extends React.Component {
 
   render() {
     let { error } = this.state;
-    console.log(this.state.tagsList);
     return (
       <>
         <section className='allTags'>

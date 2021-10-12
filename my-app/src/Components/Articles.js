@@ -37,7 +37,6 @@ class Articles extends React.Component {
       },
       this.componentDidMount
     );
-    // console.log(event);
   };
   handlePageUpdate = (num) => {
     this.setState(
@@ -103,9 +102,6 @@ class Articles extends React.Component {
         this.setState({}, this.componentDidMount);
       }
     });
-    // console.log('fav', await this.state.singleArticle[0]);
-    // // console.log('fav', result);
-    // this.componentDidMount();
   };
   handleUnFavorite = async (slug) => {
     let storageKey = localStorage['app__user'];
@@ -131,14 +127,12 @@ class Articles extends React.Component {
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
   componentDidMount = async () => {
     let storageKey = localStorage['app__user'];
     let { articlesPerPage, articleIndexPage, tagName } = this.state;
-    console.log(tagName);
     let offset = (articleIndexPage - 1) * 10;
     if (this.state.feed === 'global') {
       try {
@@ -160,17 +154,13 @@ class Articles extends React.Component {
               return res.json();
             }
           })
-          .then(
-            (data) =>
-              this.setState({
-                articlesList: [data],
-                articleCount: data.articlesCount,
-                tagUpdate: this.props.tagName,
-                // articleIndexPage: 1,
-              })
-            // console.log('global', data)
+          .then((data) =>
+            this.setState({
+              articlesList: [data],
+              articleCount: data.articlesCount,
+              tagUpdate: this.props.tagName,
+            })
           );
-        console.log(this.state.articleCount);
       } catch (error) {
         this.setState({
           error: 'Articles are not fetched',
@@ -197,18 +187,15 @@ class Articles extends React.Component {
               return res.json();
             }
           })
-          .then(
-            (data) =>
-              this.setState({
-                FeedArticlesList: [data],
-                articleCount: data.articlesCount,
-                tagUpdate: this.props.tagName,
-                FeedArticleCount: data.articlesCount,
-                FeedArticleIndexPage: 1,
-              })
-            // console.log('personal', data)
+          .then((data) =>
+            this.setState({
+              FeedArticlesList: [data],
+              articleCount: data.articlesCount,
+              tagUpdate: this.props.tagName,
+              FeedArticleCount: data.articlesCount,
+              FeedArticleIndexPage: 1,
+            })
           );
-        console.log(this.state.articleCount);
       } catch (error) {
         this.setState({
           error: 'Articles are not fetched',
@@ -259,17 +246,14 @@ class Articles extends React.Component {
             return res.json();
           }
         })
-        .then(
-          (data) =>
-            this.setState({
-              articlesList: [data],
-              articleCount: data.articlesCount,
-              tagUpdate: this.props.tagName,
-              articleIndexPage: 1,
-            })
-          // console.log('single', data)
+        .then((data) =>
+          this.setState({
+            articlesList: [data],
+            articleCount: data.articlesCount,
+            tagUpdate: this.props.tagName,
+            articleIndexPage: 1,
+          })
         );
-      console.log(this.state.articleCount);
     } catch (error) {
       this.setState({
         error: 'Articles are not fetched',
@@ -279,9 +263,6 @@ class Articles extends React.Component {
 
   render() {
     let { error, tagName, articlesList, feed } = this.state;
-    // console.log('articleslist', articlesList);
-    // console.log('yyyyyyyyyy', this.props.user.username);
-
     return (
       <>
         <div className='flex__articles'>

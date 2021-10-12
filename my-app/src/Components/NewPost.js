@@ -94,10 +94,8 @@ class NewPost extends React.Component {
       .then(({ article }) => {
         this.setState({ title: '', description: '', body: '', tagList: '' });
         this.props.history.push(`/articles/${article.slug}`);
-        console.log(article);
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -110,7 +108,6 @@ class NewPost extends React.Component {
     return (html = '');
   };
   componentDidMount = () => {
-    console.log('comp', this.props.user.username, this.props.user.email);
     this.setState({
       username: this.props.user.username,
       email: this.props.user.email,
@@ -152,8 +149,8 @@ class NewPost extends React.Component {
                 </div>
               </div>
               <MdEditor
-                className="markEditor "
-                style={{ height: '500px', overflowY : "scroll"  }}
+                className='markEditor '
+                style={{ height: '500px', overflowY: 'scroll' }}
                 renderHTML={(text) => mdParser.render(text)}
                 onChange={this.handleEditorChange}
                 onSubmit={this.clearEditor}
@@ -161,7 +158,7 @@ class NewPost extends React.Component {
                 name='body'
               />
               <span>{body}</span>
-              <div className="">
+              <div className=''>
                 <div className='w-4/12 m-3'>
                   <input
                     value={this.state.tagList}
@@ -180,7 +177,7 @@ class NewPost extends React.Component {
                   class='w-1/12 m-2 text-center py-3 h-12 block rounded bg-blue-200 text-white font-extrabold  hover:bg-blue-400 focus:outline-none '
                   disabled={title || description || body || tagList}
                 >
-                  Post 
+                  Post
                 </button>
               </div>
               <div class='text-center text-sm text-grey-dark mt-4'>

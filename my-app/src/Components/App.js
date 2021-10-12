@@ -23,7 +23,6 @@ class App extends React.Component {
 
   Signout = () => {
     this.setState({ isLoggedIn: false, user: null, isVerifying: true });
-    console.log('signout');
     localStorage.removeItem('app__user');
     this.componentDidMount();
   };

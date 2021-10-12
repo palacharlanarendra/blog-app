@@ -28,12 +28,10 @@ class SingleArticle extends React.Component {
             return res.json();
           }
         })
-        .then(
-          (data) =>
-            this.setState({
-              singleArticle: [data],
-            })
-          // console.log(data)
+        .then((data) =>
+          this.setState({
+            singleArticle: [data],
+          })
         );
     } catch (error) {
       this.setState({
@@ -55,12 +53,10 @@ class SingleArticle extends React.Component {
             return res.json();
           }
         })
-        .then(
-          (data) =>
-            this.setState({
-              favouritesList: data,
-            })
-          // console.log('wow', data)
+        .then((data) =>
+          this.setState({
+            favouritesList: data,
+          })
         );
     } catch (error) {
       this.setState({
@@ -90,9 +86,6 @@ class SingleArticle extends React.Component {
         this.setState({}, this.componentDidMount);
       }
     });
-    // console.log('fav', await this.state.singleArticle[0]);
-    // // console.log('fav', result);
-    // this.componentDidMount();
   };
   handleUnFavorite = async (slug) => {
     let storageKey = localStorage['app__user'];
@@ -118,25 +111,10 @@ class SingleArticle extends React.Component {
         }
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
   render() {
-    // console.log(this.state.singleArticle[0]?.article.author.image);
-    console.log('props', this.props);
-
-    console.log(
-      'compare this both ',
-      this.state?.favouritesList?.articles,
-      this.state.singleArticle[0]?.article
-    );
-    console.log(
-      'boolean',
-      this.state?.favouritesList?.articles?.some(
-        (elem) => elem.slug === this.state.singleArticle[0]?.article.slug
-      )
-    );
     let { error } = this.state;
     return (
       <>

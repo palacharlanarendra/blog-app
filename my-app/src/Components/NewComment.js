@@ -59,13 +59,11 @@ class NewComment extends React.Component {
         });
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
 
   handleDeleteComment = (id) => {
-    console.log(id, this.props.slug);
     let storageKey = localStorage['app__user'];
     if (storageKey) {
       fetch(`${articlesURL}/${this.props.slug}/comments/${id}`, {
@@ -92,7 +90,6 @@ class NewComment extends React.Component {
           }
         })
         .catch((errors) => {
-          console.log(errors);
           this.setState({ errors });
         });
     }
@@ -135,12 +132,8 @@ class NewComment extends React.Component {
           },
           this.fetchAllComments
         );
-        // window.location.reload();
-        // this.props.history.push(`/articles/${this.props.slug}`);
-        console.log('new comment gggggggggggggggggggggggggg', comment);
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -148,7 +141,6 @@ class NewComment extends React.Component {
     this.fetchAllComments();
   };
   render() {
-    console.log('arey user', this.props);
     let { body } = this.state.errors;
 
     return (

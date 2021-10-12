@@ -1,8 +1,6 @@
 import React from 'react';
 function Pagination(props) {
   let { articleCount, articlesPerPage, articleIndexPage } = props;
-
-  console.log(articleCount);
   let totalPages = Math.ceil(articleCount / articlesPerPage);
   let pageNum = Array.from({ length: totalPages }, (_, i) => i + 1);
   return (

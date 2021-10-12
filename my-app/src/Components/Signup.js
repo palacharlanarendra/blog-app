@@ -93,7 +93,6 @@ class Signup extends React.Component {
         this.props.history.push('/Signin');
       })
       .catch((errors) => {
-        console.log(errors);
         this.setState({ errors });
       });
   };
@@ -114,7 +113,7 @@ class Signup extends React.Component {
                 name='username'
                 placeholder='User Name'
               />
-              <span className="text-red-500 block my-2">{username}</span>
+              <span className='text-red-500 block my-2'>{username}</span>
               <input
                 value={this.state.email}
                 onChange={this.handleInput}
@@ -124,7 +123,7 @@ class Signup extends React.Component {
                 name='email'
                 placeholder='Email'
               />
-              <span className="text-red-500 block my-2">{email}</span>
+              <span className='text-red-500 block my-2'>{email}</span>
               <input
                 value={this.state.password}
                 onChange={this.handleInput}
@@ -134,7 +133,7 @@ class Signup extends React.Component {
                 class='block border border-grey-light w-full p-3 rounded '
                 placeholder='Password'
               />
-              <span className="text-red-500 block my-2">{password}</span>
+              <span className='text-red-500 block my-2'>{password}</span>
               <button
                 type='submit'
                 onClick={this.handleSubmit}
@@ -144,22 +143,19 @@ class Signup extends React.Component {
                 Create Account
               </button>
               <div class='text-center text-sm text-grey-dark '>
-                By signing up, you agree to the
-                
-                  Terms of Service
-                and
-               
-                Privacy Policy
-
+                By signing up, you agree to the Terms of Service and Privacy
+                Policy
               </div>
             </div>
 
             <div class='text-grey-dark mt-6'>
               Already have an account?
-              <NavLink to="/signin"
+              <NavLink
+                to='/signin'
                 class='no-underline border-b border-blue text-blue'
               >
-                {' '} Log in
+                {' '}
+                Log in
               </NavLink>
               .
             </div>
