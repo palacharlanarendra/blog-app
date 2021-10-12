@@ -118,7 +118,7 @@ function AuthenticatedApp(props) {
   return (
     <Switch>
       <Route path='/' exact>
-        <Home />
+        <Home user={props.user} />
       </Route>
       <Route path='/articles/:slug'>
         <SingleArticle user={props.user} />

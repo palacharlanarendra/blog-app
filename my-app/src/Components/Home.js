@@ -14,7 +14,7 @@ class Home extends React.Component {
       <div>
         <HeroSection />
         <div>
-          <Articles />
+          <Articles user={this.props.user} />
         </div>
       </div>
     );

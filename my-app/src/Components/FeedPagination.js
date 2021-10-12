@@ -1,9 +1,9 @@
 import React from 'react';
-function Pagination(props) {
-  let { articleCount, articlesPerPage, articleIndexPage } = props;
+function FeedPagination(props) {
+  let { FeedArticleCount, FeedArticlesPerPage, FeedArticleIndexPage } = props;
 
-  console.log(articleCount);
-  let totalPages = Math.ceil(articleCount / articlesPerPage);
+  console.log(FeedArticleCount, FeedArticlesPerPage, FeedArticleIndexPage);
+  let totalPages = Math.ceil(FeedArticleCount / FeedArticlesPerPage);
   let pageNum = Array.from({ length: totalPages }, (_, i) => i + 1);
   return (
     <>
@@ -11,7 +11,9 @@ function Pagination(props) {
         <button
           onClick={() =>
             props.handlePage(
-              articleIndexPage < 1 ? articleIndexPage - 1 : articleIndexPage
+              FeedArticleIndexPage < 1
+                ? FeedArticleIndexPage - 1
+                : FeedArticleIndexPage
             )
           }
           className='flex items-center px-4 py-2 mx-1 text-gray-500 bg-blue-200 rounded-md cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
@@ -22,7 +24,7 @@ function Pagination(props) {
           <button
             onClick={() => props.handlePage(eachNum)}
             className={
-              eachNum === articleIndexPage
+              eachNum === FeedArticleIndexPage
                 ? 'flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-blue-200 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200 '
                 : 'flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-indigo-500 hover:text-black dark:hover:text-gray-200'
             }
@@ -31,7 +33,7 @@ function Pagination(props) {
           </button>
         ))}
         <button
-          onClick={() => props.handlePage(articleIndexPage + 1)}
+          onClick={() => props.handlePage(FeedArticleIndexPage + 1)}
           className='flex items-center px-4 py-2 mx-1 text-gray-700 transition-colors duration-200 transform bg-blue-200 rounded-md dark:bg-gray-800 dark:text-gray-200 hover:bg-indigo-600 dark:hover:bg-indigo-500 hover:text-white dark:hover:text-gray-200'
         >
           Next
@@ -41,4 +43,4 @@ function Pagination(props) {
   );
 }
 
-export default Pagination;
+export default FeedPagination;

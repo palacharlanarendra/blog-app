@@ -27,6 +27,8 @@ class UserProfile extends React.Component {
       articlesPerPage: 10,
       articleIndexPage: 1,
       error: '',
+      favArticlesList: '',
+      favArticlesCount: '',
     };
   }
   handlePageUpdate = (num) => {
@@ -120,12 +122,12 @@ class UserProfile extends React.Component {
                 return res.json();
               }
             })
-            .then(
-              (data) =>
-                this.setState({
-                  articlesList: [data],
-                })
-              // console.log(data)
+            .then((data) =>
+              this.setState({
+                favArticlesList: [data],
+                favArticlesCount: data.length,
+                articlesList: [],
+              })
             );
         } catch (error) {
           this.setState({
@@ -153,8 +155,9 @@ class UserProfile extends React.Component {
                   articleCount: data.articlesCount,
                   tagUpdate: this.props.tagName,
                   articleIndexPage: 1,
+                  favArticlesList: [],
                 })
-              // console.log('hello', data.articlesCount)
+              // console.log('hello', data)
             );
           console.log(this.state.articleCount);
         } catch (error) {
@@ -215,8 +218,8 @@ class UserProfile extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res.json());
-          // this.props.history.push(`/`);
+          console.log('xxxxxxxxxx', res.json());
+          this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
@@ -245,7 +248,7 @@ class UserProfile extends React.Component {
           });
         } else {
           console.log(res.json());
-          // this.props.history.push(`/`);
+          this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
@@ -256,10 +259,20 @@ class UserProfile extends React.Component {
   render() {
     // console.log('id', this.props.match.params.username);
     let userUniqueName = this.props.match.params.username;
-    let { error, tagName, articlesList, feed, userProfile, articleCount } =
-      this.state;
+    let {
+      error,
+      tagName,
+      articlesList,
+      feed,
+      userProfile,
+      articleCount,
+      following,
+      favArticlesList,
+    } = this.state;
     let { username, bio, image, email } = this.props.user;
     const { profile } = userProfile;
+    console.log('hello telogoda', favArticlesList);
+    console.log('yyyyyyyyy', articlesList);
     return (
       <>
         <section className='profile__section'>
@@ -272,7 +285,7 @@ class UserProfile extends React.Component {
             <div class='flex justify-center -mt-8'>
               <img
                 src={profile?.image}
-                class='rounded-full border-solid border-white border-2 -mt-3 max-h-25'
+                class='rounded-full border-solid border-white border-2 -mt-3 max-h-20'
                 alt='profile'
               />
             </div>
@@ -288,57 +301,69 @@ class UserProfile extends React.Component {
               </p>
             </div>
             <div class='flex justify-center pb-3 text-black'>
-              <div class='text-center mr-3 border-r pr-3'>
-                <h2>
-                  {this.state?.articleCount ? this.state?.articleCount : 0}
-                </h2>
-                <span>Articles</span>
-              </div>
-              <div class='text-center'>
-                <h2>0</h2>
-                <span>Followers</span>
-              </div>
+              {articlesList[0]?.articles?.length > 0 ? (
+                <div class='text-center mr-3 border-r pr-3'>
+                  <h2>
+                    {this.state?.articleCount ? this.state?.articleCount : 0}
+                  </h2>
+                  <span>Articles</span>
+                </div>
+              ) : (
+                ''
+              )}
+
+              {favArticlesList[0]?.articles.length > 0 ? (
+                <div class='text-center'>
+                  <h2>{favArticlesList[0]?.articles.length}</h2>
+                  <span>Fav Articles</span>
+                </div>
+              ) : (
+                ''
+              )}
             </div>
-            <button
-              className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
-              onClick={() =>
-                this.handleFollow(this.props.match.params.username)
-              }
-            >
-              Follow
-              <svg
-                className='w-4 h-4 ml-2'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                stroke-width='2'
-                fill='none'
-                stroke-linecap='round'
-                stroke-linejoin='round'
+            {userProfile?.profile?.following ? (
+              <button
+                className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
+                onClick={() =>
+                  this.handleUnFollow(this.props.match.params.username)
+                }
               >
-                <path d='M5 12h14'></path>
-                <path d='M12 5l7 7-7 7'></path>
-              </svg>
-            </button>
-            <button
-              className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
-              onClick={() =>
-                this.handleUnFollow(this.props.match.params.username)
-              }
-            >
-              Unfollow
-              <svg
-                className='w-4 h-4 ml-2'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                stroke-width='2'
-                fill='none'
-                stroke-linecap='round'
-                stroke-linejoin='round'
+                Unfollow
+                <svg
+                  className='w-4 h-4 ml-2'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  fill='none'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                >
+                  <path d='M5 12h14'></path>
+                  <path d='M12 5l7 7-7 7'></path>
+                </svg>
+              </button>
+            ) : (
+              <button
+                className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
+                onClick={() =>
+                  this.handleFollow(this.props.match.params.username)
+                }
               >
-                <path d='M5 12h14'></path>
-                <path d='M12 5l7 7-7 7'></path>
-              </svg>
-            </button>
+                Follow
+                <svg
+                  className='w-4 h-4 ml-2'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  fill='none'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                >
+                  <path d='M5 12h14'></path>
+                  <path d='M12 5l7 7-7 7'></path>
+                </svg>
+              </button>
+            )}
           </div>
         </section>
 
@@ -348,7 +373,7 @@ class UserProfile extends React.Component {
               <div className='container flex items-center justify-center p-6 mx-auto text-gray-600 capitalize dark:text-gray-300'>
                 <button
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                    feed === 'personal' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('personal')}
                 >
@@ -356,7 +381,7 @@ class UserProfile extends React.Component {
                 </button>
                 <button
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                    feed === 'global' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('global')}
                 >
@@ -379,14 +404,113 @@ class UserProfile extends React.Component {
             </nav>
             <div className='container px-5 py-24 mx-auto'>
               <div className='-my-8 divide-y-2 divide-gray-100'>
-                {articlesList.length <= 0 ? <p>No Articles Found!</p> : ''}
+                {this.state.articlesList[0]?.articles <= 0 ? (
+                  <p>No Articles Found!</p>
+                ) : (
+                  ''
+                )}
                 {error ? <p>{error}</p> : ''}
-                {this.state.articlesList.length === 0 && !error ? (
+                {(this.state.articlesList[0]?.articles === 0 && !error) ||
+                (this.state.favArticlesList[0]?.articles === 0 && !error) ? (
                   <Loader />
                 ) : (
                   ''
                 )}
                 {this.state.articlesList[0]?.articles?.map((eachArticle) => (
+                  <div className='py-8 flex flex-wrap md:flex-nowrap'>
+                    <div className='md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col'>
+                      <span className='font-semibold title-font text-gray-700'>
+                        <img
+                          className='author__image'
+                          src={eachArticle.author.image}
+                          alt='profile pic'
+                        />
+
+                        <p>
+                          {eachArticle.author.username} in
+                          <span> {eachArticle.tagList[0]}</span>
+                        </p>
+                      </span>
+                      <span className='mt-1 text-gray-500 text-sm'>
+                        {moment(eachArticle?.updatedAt).format('MMM Do YY')}
+                      </span>
+                    </div>
+                    <div className='md:flex-grow'>
+                      <NavLink to={`/articles/${eachArticle.slug}`}>
+                        <h2 className='text-2xl font-medium text-gray-900 title-font mb-2'>
+                          {eachArticle.title}
+                        </h2>
+                      </NavLink>
+                      <p className='leading-relaxed'>
+                        {eachArticle.description}
+                      </p>
+                      <strong className='like__image'>
+                        <img src='./images/heart.svg' alt='like button' />
+                      </strong>
+                      <NavLink to={`/articles/${eachArticle.slug}`}>
+                        <button className='text-indigo-500 inline-flex items-center mt-4'>
+                          Read More
+                          <svg
+                            className='w-4 h-4 ml-2'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'
+                            stroke-width='2'
+                            fill='none'
+                            stroke-linecap='round'
+                            stroke-linejoin='round'
+                          >
+                            <path d='M5 12h14'></path>
+                            <path d='M12 5l7 7-7 7'></path>
+                          </svg>
+                        </button>
+                      </NavLink>
+                      {userUniqueName === username && feed === 'personal' ? (
+                        <NavLink to={`/edit/articles/${eachArticle.slug}`}>
+                          <button className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 m-2 border rounded-md'>
+                            Edit
+                            <svg
+                              className='w-4 h-4 ml-2'
+                              viewBox='0 0 24 24'
+                              stroke='currentColor'
+                              stroke-width='2'
+                              fill='none'
+                              stroke-linecap='round'
+                              stroke-linejoin='round'
+                            >
+                              <path d='M5 12h14'></path>
+                              <path d='M12 5l7 7-7 7'></path>
+                            </svg>
+                          </button>
+                        </NavLink>
+                      ) : (
+                        ''
+                      )}
+                      {userUniqueName === username && feed === 'personal' ? (
+                        <button
+                          className='text-indigo-500 inline-flex items-center mt-4 px-3 py-1 border rounded-md m-2'
+                          onClick={() => this.handleDelete(eachArticle.slug)}
+                        >
+                          Delete
+                          <svg
+                            className='w-4 h-4 ml-2'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'
+                            stroke-width='2'
+                            fill='none'
+                            stroke-linecap='round'
+                            stroke-linejoin='round'
+                          >
+                            <path d='M5 12h14'></path>
+                            <path d='M12 5l7 7-7 7'></path>
+                          </svg>
+                        </button>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {this.state.favArticlesList[0]?.articles?.map((eachArticle) => (
                   <div className='py-8 flex flex-wrap md:flex-nowrap'>
                     <div className='md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col'>
                       <span className='font-semibold title-font text-gray-700'>

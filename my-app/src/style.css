@@ -20,6 +20,23 @@
 .active {
   border-bottom: 2px solid blue;
 }
+.flex__heart {
+  display: flex;
+  align-items: center;
+}
+.paragraph {
+  margin-left: 1rem;
+}
+button:focus {
+  outline: none;
+}
+a:hover,
+a {
+  text-decoration: none !important;
+}
+.para {
+  margin-top: 2rem;
+}
 /* Loader styles */
 @keyframes bouncing-loader {
   to {
@@ -50,7 +67,7 @@
 }
 /* article styles */
 .like__image img {
-  width: 1rem;
+  width: 1.5rem;
   color: #bfdbfe;
 }
 /* tags component styles */
@@ -67,6 +84,11 @@
 }
 .articleSection {
   flex: 0 1 65%;
+}
+.flex__comment {
+  display: flex;
+  justify-content: space-between;
+  width: 50rem;
 }
 
 .main__container {
@@ -87,6 +109,17 @@
   left: 40%;
   z-index: -1;
 } */
+.comment__List,
+.comment__form {
+  width: 100%;
+  max-width: 30rem;
+  margin: 2rem auto;
+}
+
+.outer__div {
+  text-align: center;
+  margin-bottom: 1rem;
+}
 .your__articles {
   position: absolute;
   top: 70%;
@@ -113,6 +146,7 @@ textarea::-webkit-scrollbar {
   justify-content: center;
   align-self: center;
 }
+
 @media screen and (max-width: 1024px) {
   .display {
     display: block;

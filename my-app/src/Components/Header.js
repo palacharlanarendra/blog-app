@@ -65,7 +65,8 @@ function NonAuthHeader() {
   return (
     <div class='flex flex-col mt-4 space-y-8 lg:flex-row lg:items-center lg:mt-0 lg:space-y-0 lg:space-x-16'>
       <NavLink
-        activeclassName='active'
+        activeClassName='active'
+        exact
         to='/'
         className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
       >
@@ -73,7 +74,7 @@ function NonAuthHeader() {
       </NavLink>
 
       <NavLink
-        activeclassName='active'
+        activeClassName='active'
         to='/signin'
         className='block font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
       >
@@ -95,6 +96,7 @@ function AuthHeader(props) {
       <div class='flex flex-col mt-4 space-y-8 lg:flex-row lg:items-center lg:mt-0 lg:space-y-0 lg:space-x-16 navDiv'>
         <NavLink
           activeclassName='active'
+          exact
           to='/'
           className='block font-medium  dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-400 hover:underline'
         >

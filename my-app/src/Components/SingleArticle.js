@@ -10,9 +10,11 @@ class SingleArticle extends React.Component {
     super(props);
     this.state = {
       singleArticle: [],
+      favouritesList: '',
       error: '',
     };
   }
+
   componentDidMount = async () => {
     let slug = this.props.match.params.slug;
     try {
@@ -26,20 +28,49 @@ class SingleArticle extends React.Component {
             return res.json();
           }
         })
-        .then((data) =>
-          this.setState({
-            singleArticle: [data],
-          })
+        .then(
+          (data) =>
+            this.setState({
+              singleArticle: [data],
+            })
+          // console.log(data)
         );
     } catch (error) {
       this.setState({
         error: 'Article not fetched',
       });
     }
-  };
-  handleFavorite = (slug) => {
     let storageKey = localStorage['app__user'];
-    fetch(articlesURL + `/${slug}/favorite`, {
+    try {
+      await fetch(`${articlesURL}/?favorited=${this.props.user.username}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Token ${storageKey}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          } else {
+            return res.json();
+          }
+        })
+        .then(
+          (data) =>
+            this.setState({
+              favouritesList: data,
+            })
+          // console.log('wow', data)
+        );
+    } catch (error) {
+      this.setState({
+        error: 'Articles are not fetched',
+      });
+    }
+  };
+  handleFavorite = async (slug) => {
+    let storageKey = localStorage['app__user'];
+    await fetch(articlesURL + `/${slug}/favorite`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -50,25 +81,22 @@ class SingleArticle extends React.Component {
       },
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then(({ errors }) => {
-            return Promise.reject(errors);
-          });
-        } else {
-          console.log(res.json());
-          // window.location.reload();
-        }
-      })
-      .catch((errors) => {
-        console.log(errors);
-        this.setState({ errors });
-      });
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then(({ errors }) => {
+          return Promise.reject(errors);
+        });
+      } else {
+        this.setState({}, this.componentDidMount);
+      }
+    });
+    // console.log('fav', await this.state.singleArticle[0]);
+    // // console.log('fav', result);
+    // this.componentDidMount();
   };
-  handleUnFavorite = (slug) => {
+  handleUnFavorite = async (slug) => {
     let storageKey = localStorage['app__user'];
-    fetch(articlesURL + `/${slug}/favorite`, {
+    await fetch(articlesURL + `/${slug}/favorite`, {
       method: 'DELETE',
       mode: 'cors',
       cache: 'no-cache',
@@ -86,8 +114,7 @@ class SingleArticle extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res.json());
-          // window.location.reload();
+          this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
@@ -98,6 +125,18 @@ class SingleArticle extends React.Component {
   render() {
     // console.log(this.state.singleArticle[0]?.article.author.image);
     console.log('props', this.props);
+
+    console.log(
+      'compare this both ',
+      this.state?.favouritesList?.articles,
+      this.state.singleArticle[0]?.article
+    );
+    console.log(
+      'boolean',
+      this.state?.favouritesList?.articles?.some(
+        (elem) => elem.slug === this.state.singleArticle[0]?.article.slug
+      )
+    );
     let { error } = this.state;
     return (
       <>
@@ -108,18 +147,26 @@ class SingleArticle extends React.Component {
               'MMM Do YY'
             )}
           </p>
-          <strong
-            onClick={() => this.handleFavorite(this.props.match.params.slug)}
-            className='like__image'
-          >
-            <img src='/images/heart.svg' alt='like button' />
-          </strong>
-          <strong
-            onClick={() => this.handleUnFavorite(this.props.match.params.slug)}
-            className='like__image'
-          >
-            <img src='/images/heart.svg' alt='like button' />
-          </strong>
+          {this.state?.favouritesList?.articles?.some(
+            (elem) => elem.slug === this.state.singleArticle[0]?.article.slug
+          ) ? (
+            <strong
+              onClick={() =>
+                this.handleUnFavorite(this.props.match.params.slug)
+              }
+              className='like__image'
+            >
+              <img src='/images/heart.svg' alt='like button' />
+            </strong>
+          ) : (
+            <strong
+              onClick={() => this.handleFavorite(this.props.match.params.slug)}
+              className='like__image'
+            >
+              <img src='/images/heart2.png' alt='like button' />
+            </strong>
+          )}
+
           <div className='max-w-xl mb-5 md:mx-auto sm:text-center lg:max-w-2xl'>
             <div className='mb-4'>
               <a
@@ -171,7 +218,7 @@ class SingleArticle extends React.Component {
             <div class='flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800'>
               <div class='px-4 py-2 -mx-3'>
                 <div class='mx-3'>
-                  <p class='text-sm text-gray-600 dark:text-gray-200'>
+                  <p class='text-sm text-gray-600 dark:text-gray-200 para'>
                     <NavLink to='/signin'>Sign-in</NavLink> or{' '}
                     <NavLink to='/signup'>Sign-up</NavLink> to comment on this
                     article
@@ -180,7 +227,6 @@ class SingleArticle extends React.Component {
               </div>
             </div>
           )}
-          <CommentList slug={this.props.match.params.slug} />
         </section>
       </>
     );

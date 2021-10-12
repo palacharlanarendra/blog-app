@@ -125,6 +125,9 @@ class Settings extends React.Component {
     this.setState({
       username: this.props.user.username,
       email: this.props.user.email,
+      image: this.props.user.image,
+      bio: this.props.user.bio,
+      password: this.props.user.password,
     });
   };
   render() {
@@ -158,7 +161,7 @@ class Settings extends React.Component {
               />
               <span>{bio}</span>
               <input
-                value={this.state.name}
+                value={this.state.username}
                 onChange={this.handleInput}
                 type='text'
                 id='name'
@@ -195,9 +198,7 @@ class Settings extends React.Component {
               >
                 Update
               </button>
-                          </div>
-
-            
+            </div>
           </div>
         </div>
       </>

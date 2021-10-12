@@ -1,22 +1,22 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 function HeroSection() {
   return (
     <>
       <section className='hero__section bg-blue-200'>
         <div className='container'>
-          <div class='container flex flex-col px-6 py-10 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center lg:space-x-6'>
+          <div class='container flex flex-col px-6 py-10 mx-auto space-y-6 lg:h-128 lg:py-16 lg:flex-row lg:items-center lg:space-x-6 justify-between'>
             <div class='w-full lg:w-1/2 hero_content'>
               <div class='lg:max-w-lg'>
-                <h1 class='text-2xl font-medium tracking-wide text-gray-800 dark:text-white lg:text-4xl'>
+                <h1 class=' font-large text-4xl tracking-wide text-gray-800 dark:text-white lg:text-6xl'>
                   Medium is a place to write, read, and connect
                 </h1>
-                <p class='mt-2 text-gray-600 dark:text-gray-300'>
+                <p class='mt-2 text-gray-600 dark:text-gray-300 lg:text-2xl'>
                   It's easy and free to post your thinking on any topic and
                   connect with millions of readers.
                 </p>
-                <NavLink to="/newpost">
+                <NavLink to='/newpost'>
                   <button class='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-lg shadow'>
                     Start Writing
                   </button>

@@ -6,7 +6,7 @@ import Pagination from './Pagination';
 import { NavLink } from 'react-router-dom';
 import TagCloud from './TagCloud';
 import { articlesURL, FEED_ARTICLES } from '../utils/constant';
-
+import FeedPagination from './FeedPagination';
 class Articles extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +21,11 @@ class Articles extends React.Component {
       articlesPerPage: 10,
       articleIndexPage: 1,
       error: '',
+      favouritesList: '',
+      FeedArticlesList: '',
+      FeedArticleCount: 0,
+      FeedArticlesPerPage: 10,
+      FeedArticleIndexPage: 1,
     };
   }
 
@@ -28,9 +33,11 @@ class Articles extends React.Component {
     this.setState(
       {
         tagName: event,
+        feed: '',
       },
       this.componentDidMount
     );
+    // console.log(event);
   };
   handlePageUpdate = (num) => {
     this.setState(
@@ -74,9 +81,9 @@ class Articles extends React.Component {
       this.componentDidMount
     );
   };
-  handleFavorite = (slug) => {
+  handleFavorite = async (slug) => {
     let storageKey = localStorage['app__user'];
-    fetch(articlesURL + `/${slug}/favorite`, {
+    await fetch(articlesURL + `/${slug}/favorite`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -87,25 +94,22 @@ class Articles extends React.Component {
       },
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then(({ errors }) => {
-            return Promise.reject(errors);
-          });
-        } else {
-          console.log(res.json());
-          // window.location.reload();
-        }
-      })
-      .catch((errors) => {
-        console.log(errors);
-        this.setState({ errors });
-      });
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then(({ errors }) => {
+          return Promise.reject(errors);
+        });
+      } else {
+        this.setState({}, this.componentDidMount);
+      }
+    });
+    // console.log('fav', await this.state.singleArticle[0]);
+    // // console.log('fav', result);
+    // this.componentDidMount();
   };
-  handleUnFavorite = (slug) => {
+  handleUnFavorite = async (slug) => {
     let storageKey = localStorage['app__user'];
-    fetch(articlesURL + `/${slug}/favorite`, {
+    await fetch(articlesURL + `/${slug}/favorite`, {
       method: 'DELETE',
       mode: 'cors',
       cache: 'no-cache',
@@ -123,8 +127,7 @@ class Articles extends React.Component {
             return Promise.reject(errors);
           });
         } else {
-          console.log(res.json());
-          // window.location.reload();
+          this.setState({}, this.componentDidMount);
         }
       })
       .catch((errors) => {
@@ -135,6 +138,7 @@ class Articles extends React.Component {
   componentDidMount = async () => {
     let storageKey = localStorage['app__user'];
     let { articlesPerPage, articleIndexPage, tagName } = this.state;
+    console.log(tagName);
     let offset = (articleIndexPage - 1) * 10;
     if (this.state.feed === 'global') {
       try {
@@ -196,10 +200,11 @@ class Articles extends React.Component {
           .then(
             (data) =>
               this.setState({
-                articlesList: [data],
+                FeedArticlesList: [data],
                 articleCount: data.articlesCount,
                 tagUpdate: this.props.tagName,
-                // articleIndexPage: 1,
+                FeedArticleCount: data.articlesCount,
+                FeedArticleIndexPage: 1,
               })
             // console.log('personal', data)
           );
@@ -210,11 +215,73 @@ class Articles extends React.Component {
         });
       }
     }
+    // let storageKey = localStorage['app__user'];
+    try {
+      await fetch(`${articlesURL}/?favorited=${this.props.user.username}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Token ${storageKey}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          } else {
+            return res.json();
+          }
+        })
+        .then((data) =>
+          this.setState({
+            favouritesList: data,
+          })
+        );
+    } catch (error) {
+      this.setState({
+        error: 'Articles are not fetched',
+      });
+    }
+    try {
+      await fetch(
+        tagName === null
+          ? `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}`
+          : `${articlesURL}/?offset=${offset}&limit=${articlesPerPage}&tag=${tagName}`,
+        {
+          method: 'GET',
+          headers: {
+            authorization: `Token ${storageKey}`,
+          },
+        }
+      )
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          } else {
+            return res.json();
+          }
+        })
+        .then(
+          (data) =>
+            this.setState({
+              articlesList: [data],
+              articleCount: data.articlesCount,
+              tagUpdate: this.props.tagName,
+              articleIndexPage: 1,
+            })
+          // console.log('single', data)
+        );
+      console.log(this.state.articleCount);
+    } catch (error) {
+      this.setState({
+        error: 'Articles are not fetched',
+      });
+    }
   };
 
   render() {
-    let { error, tagName, articlesList } = this.state;
-    console.log('articleslist', articlesList);
+    let { error, tagName, articlesList, feed } = this.state;
+    // console.log('articleslist', articlesList);
+    // console.log('yyyyyyyyyy', this.props.user.username);
+
     return (
       <>
         <div className='flex__articles'>
@@ -222,16 +289,16 @@ class Articles extends React.Component {
             <nav className='bg-white shadow dark:bg-gray-800'>
               <div className='container flex items-center justify-center p-6 mx-auto text-gray-600 capitalize dark:text-gray-300'>
                 <button
-                  className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                  className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200  mx-1.5 sm:mx-6 ${
+                    feed === 'personal' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('personal')}
                 >
                   Your Feed
                 </button>
                 <button
-                  className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                  className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200  mx-1.5 sm:mx-6 ${
+                    feed === 'global' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('global')}
                 >
@@ -256,11 +323,12 @@ class Articles extends React.Component {
               <div className='-my-8 divide-y-2 divide-gray-100'>
                 {articlesList.length <= 0 ? <p>No Articles Found!</p> : ''}
                 {error ? <p>{error}</p> : ''}
-                {this.state.articlesList.length === 0 && !error ? (
+                {/* {(this.state.articlesList.length === 0 && !error) ||
+                (this.state.favouritesList[0].length === 0 && !error) ? (
                   <Loader />
                 ) : (
                   ''
-                )}
+                )} */}
                 {this.state.articlesList[0]?.articles?.map((eachArticle) => (
                   <div className='py-8 flex flex-wrap md:flex-nowrap'>
                     <div className='md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col'>
@@ -292,19 +360,41 @@ class Articles extends React.Component {
                       <p className='leading-relaxed'>
                         {eachArticle.description}
                       </p>
-                      <strong
-                        onClick={() => this.handleFavorite(eachArticle.slug)}
-                        className='like__image'
-                      >
-                        <img src='/images/heart.svg' alt='like button' />
-                      </strong>
-                      <strong
-                        onClick={() => this.handleUnFavorite(eachArticle.slug)}
-                        className='like__image'
-                      >
-                        <img src='/images/heart.svg' alt='like button' />
-                      </strong>
-                      <p>{eachArticle.favoritesCount}</p>
+                      <div className='flex__heart'>
+                        {this.state?.favouritesList?.articles?.some(
+                          (elem) => elem.slug === eachArticle.slug
+                        ) ? (
+                          <strong
+                            onClick={() =>
+                              this.handleUnFavorite(eachArticle.slug)
+                            }
+                            className='like__image'
+                          >
+                            <img
+                              className='heart'
+                              src='/images/heart.svg'
+                              alt='like button'
+                            />
+                          </strong>
+                        ) : (
+                          <strong
+                            onClick={() =>
+                              this.handleFavorite(eachArticle.slug)
+                            }
+                            className='like__image'
+                          >
+                            <img
+                              className='heart'
+                              src='/images/heart2.png'
+                              alt='like button'
+                            />
+                          </strong>
+                        )}
+                        <p className='paragraph'>
+                          {eachArticle.favoritesCount}
+                        </p>
+                      </div>
+
                       <NavLink to={`/articles/${eachArticle.slug}`}>
                         <button className='text-indigo-500 inline-flex items-center mt-4'>
                           Read More
@@ -325,15 +415,22 @@ class Articles extends React.Component {
                     </div>
                   </div>
                 ))}
-                <Pagination
-                  {...this.state}
-                  handlePage={this.handlePageUpdate}
-                />
+                {this.state.feed === 'global' ? (
+                  <Pagination
+                    {...this.state}
+                    handlePage={this.handlePageUpdate}
+                  />
+                ) : (
+                  <FeedPagination
+                    {...this.state}
+                    handlePage={this.handlePageUpdate}
+                  />
+                )}
               </div>
             </div>
           </section>
           <TagCloud
-            handleTagName={this.handleTagName}
+            handleTagName={(event) => this.handleTagName(event)}
             handleFilterReset={this.handleFilterReset}
           />
         </div>

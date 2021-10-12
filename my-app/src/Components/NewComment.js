@@ -1,11 +1,13 @@
 import React from 'react';
 import { articlesURL } from '../utils/constant';
 import { withRouter } from 'react-router';
+import CommentList from './CommentList';
 class NewComment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       body: '',
+      commentsArray: [],
       errors: {
         body: '',
       },
@@ -29,6 +31,71 @@ class NewComment extends React.Component {
         break;
     }
     this.setState({ errors, [name]: value });
+  };
+  fetchAllComments = () => {
+    fetch(`${articlesURL}/${this.props.slug}/comments`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then(({ errors }) => {
+            return Promise.reject(errors);
+          });
+        } else {
+          return res.json();
+        }
+      })
+      .then((data) => {
+        this.setState({
+          commentsArray: data.comments,
+        });
+      })
+      .catch((errors) => {
+        console.log(errors);
+        this.setState({ errors });
+      });
+  };
+
+  handleDeleteComment = (id) => {
+    console.log(id, this.props.slug);
+    let storageKey = localStorage['app__user'];
+    if (storageKey) {
+      fetch(`${articlesURL}/${this.props.slug}/comments/${id}`, {
+        method: 'DELETE',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        'Access-Control-Allow-Headers':
+          'Content-Type,Content-Length,Server,Date,access-control-allow-methods,access-control-allow-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Token ${storageKey}`,
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+      })
+        .then((res) => {
+          if (!res.ok) {
+            return res.json().then(({ errors }) => {
+              return Promise.reject(errors);
+            });
+          } else {
+            this.fetchAllComments();
+          }
+        })
+        .catch((errors) => {
+          console.log(errors);
+          this.setState({ errors });
+        });
+    }
   };
   handleSubmit = (event) => {
     event.preventDefault();
@@ -62,49 +129,56 @@ class NewComment extends React.Component {
         }
       })
       .then(({ comment }) => {
-        this.setState({
-          body: '',
-        });
-        window.location.reload();
+        this.setState(
+          {
+            body: '',
+          },
+          this.fetchAllComments
+        );
+        // window.location.reload();
         // this.props.history.push(`/articles/${this.props.slug}`);
-        console.log('new comment', comment);
+        console.log('new comment gggggggggggggggggggggggggg', comment);
       })
       .catch((errors) => {
         console.log(errors);
         this.setState({ errors });
       });
   };
-
+  componentDidMount = () => {
+    this.fetchAllComments();
+  };
   render() {
-    console.log('arey user', this.props.slug);
+    console.log('arey user', this.props);
     let { body } = this.state.errors;
 
     return (
       <>
-        <div class='bg-grey-lighter min-h-screen flex flex-col'>
-          <div class='container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2'>
-            <div class='bg-white px-6 py-8 rounded shadow-md text-black w-full'>
-              <input
-                value={this.state.body}
-                onChange={this.handleInput}
-                type='text'
-                class='block border border-grey-light w-full p-3 rounded mb-4'
-                id='body'
-                name='body'
-                placeholder='body'
-              />
-              <span>{body}</span>
+        <div class='bg-white px-6 py-8 rounded shadow-md text-black comment__form'>
+          <input
+            value={this.state.body}
+            onChange={this.handleInput}
+            type='text'
+            class='block border border-grey-light w-full p-3 rounded mb-4'
+            id='body'
+            name='body'
+            placeholder=' Your comments here....'
+          />
+          <span>{body}</span>
 
-              <button
-                type='submit'
-                onClick={this.handleSubmit}
-                class='w-full text-center py-3 rounded bg-blue-200 text-black hover:bg-blue-400 focus:outline-none my-1'
-                disabled={body}
-              >
-                POST
-              </button>
-            </div>
-          </div>
+          <button
+            type='submit'
+            onClick={this.handleSubmit}
+            class=' text-center py-3 rounded w-full bg-blue-200 text-black hover:bg-blue-400  focus:outline-none my-1'
+            disabled={body}
+          >
+            POST
+          </button>
+          <CommentList
+            commentsArray={this.state.commentsArray}
+            slug={this.props.slug}
+            fetchAllComments={this.fetchAllComments}
+            handleDeleteComment={(id) => this.handleDeleteComment(id)}
+          />
         </div>
       </>
     );

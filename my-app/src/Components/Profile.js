@@ -15,6 +15,7 @@ class Profile extends React.Component {
       feed: 'global',
       login: '',
       store: '',
+      feedCount: '',
       // pagination
       articleCount: 0,
       articlesPerPage: 10,
@@ -88,10 +89,13 @@ class Profile extends React.Component {
                 return res.json();
               }
             })
-            .then((data) =>
-              this.setState({
-                articlesList: [data],
-              })
+            .then(
+              (data) =>
+                this.setState({
+                  articlesList: [data],
+                  feedCount: data.articles.length,
+                })
+              // console.log(data)
             );
         } catch (error) {
           this.setState({
@@ -176,7 +180,7 @@ class Profile extends React.Component {
             <div class='flex justify-center -mt-8'>
               <img
                 src={image}
-                class='rounded-full border-solid border-white border-2 -mt-3 max-h-25'
+                class='rounded-full border-solid border-white border-2 -mt-3 max-h-20'
                 alt='profile'
               />
             </div>
@@ -196,10 +200,29 @@ class Profile extends React.Component {
                 </h2>
                 <span>Articles</span>
               </div>
-              <div class='text-center'>
-                <h2>0</h2>
-                <span>Followers</span>
+              <div class='text-center mr-3  pr-3'>
+                <h2>{this.state?.feedCount ? this.state?.feedCount : 0}</h2>
+                <span>Feed Articles</span>
               </div>
+            </div>
+            <div className='outer__div'>
+              <NavLink to='/settings'>
+                <button className='text-indigo-500 inline-flex items-center edit__profile  mt-4'>
+                  Edit Profile
+                  <svg
+                    className='w-4 h-4 ml-2'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    stroke-width='2'
+                    fill='none'
+                    stroke-linecap='round'
+                    stroke-linejoin='round'
+                  >
+                    <path d='M5 12h14'></path>
+                    <path d='M12 5l7 7-7 7'></path>
+                  </svg>
+                </button>
+              </NavLink>
             </div>
           </div>
         </section>
@@ -210,7 +233,7 @@ class Profile extends React.Component {
               <div className='container flex items-center justify-center p-6 mx-auto text-gray-600 capitalize dark:text-gray-300'>
                 <button
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                    feed === 'personal' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('personal')}
                 >
@@ -218,7 +241,7 @@ class Profile extends React.Component {
                 </button>
                 <button
                   className={`border-b-2 border-transparent hover:text-gray-800 dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6 ${
-                    tagName ? '' : 'active'
+                    feed === 'global' ? 'active' : ''
                   }`}
                   onClick={() => this.handleFeed('global')}
                 >
@@ -276,9 +299,6 @@ class Profile extends React.Component {
                       <p className='leading-relaxed'>
                         {eachArticle.description}
                       </p>
-                      <strong className='like__image'>
-                        <img src='./images/heart.svg' alt='like button' />
-                      </strong>
                       <NavLink to={`/articles/${eachArticle.slug}`}>
                         <button className='text-indigo-500 inline-flex items-center mt-4'>
                           Read More
