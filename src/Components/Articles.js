@@ -303,7 +303,7 @@ class Articles extends React.Component {
             <div className='container px-5 py-24 mx-auto'>
               <div className='-my-8 divide-y-2 divide-gray-100'>
                 {articlesList.length <= 0 ? <p>No Articles Found!</p> : ''}
-                {articlesList.length ? <p>{error}</p> : ''}
+                {articlesList.length<= 0  ? <p>{error}</p> : ''}
                 {/* {(this.state.articlesList.length === 0 && !error) ||
                 (this.state.favouritesList[0].length === 0 && !error) ? (
                   <Loader />
