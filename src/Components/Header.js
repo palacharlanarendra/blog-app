@@ -16,6 +16,7 @@ class Header extends React.Component {
     });
   };
   render() {
+    console.log(this.props.userData, 'userDattaaaaaaaa');
     return (
       <header class='bg-blue-200 dark:bg-gray-800  header'>
         <nav class='border-b dark:border-gray-700'>
