@@ -15,11 +15,11 @@ import Profile from './Profile';
 import UpdateArticle from './UpdateArticle';
 import UserProfile from './UserProfile';
 class App extends React.Component {
-  state = {
-    isLoggedIn: false,
-    user: null,
-    isVerifying: true,
-  };
+  // state = {
+  //   isLoggedIn: false,
+  //   user: null,
+  //   isVerifying: true,
+  // };
 
   Signout = () => {
     this.setState({ isLoggedIn: false, user: null, isVerifying: true });
