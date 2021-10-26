@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
 import { UserProvider } from './UserContext';
 import Signin from './Signin';
 import Signup from './Signup';
@@ -16,6 +15,7 @@ import NewPost from './NewPost';
 import Profile from './Profile';
 import UpdateArticle from './UpdateArticle';
 import UserProfile from './UserProfile';
+import UserContext from './UserContext';
 function HandleAuthenticate(props) {
   return (
     <div>
@@ -51,6 +51,7 @@ function UnAuthenticatedApp(props) {
     </Switch>
   );
 }
+//function authenticate
 function AuthenticatedApp(props) {
   return (
     <Switch>

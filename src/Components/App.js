@@ -1,16 +1,14 @@
 import React from 'react';
-
 import { USER_VERIFY_URL } from '../utils/constant';
-
 import '../style.css';
-
 import FullPageSpinner from './FullPageSpinner';
 import HandleAuthenticate from './HandleAuthenticate';
+import { UserProvider } from './UserContext';
 class App extends React.Component {
   state = {
     isLoggedIn: false,
     user: null,
-    isVerifying: true,
+    isVerifying: false,
   };
 
   Signout = () => {
@@ -47,19 +45,22 @@ class App extends React.Component {
   };
   render() {
     const { isLoggedIn, user, isVerifying } = this.state;
-    const userData = { isLoggedIn, user, isVerifying };
+    const userData = {
+      isLoggedIn,
+      user,
+      isVerifying,
+      Signout: this.Signout,
+      updatedUser: this.updatedUser,
+    };
 
     if (this.state.isVerifying) {
       return <FullPageSpinner />;
     }
     return (
       <div>
-        <HandleAuthenticate
-          isLoggedIn={this.state.isLoggedIn}
-          Signout={this.Signout}
-          user={this.state.user}
-          updatedUser={this.updatedUser}
-        />
+        <UserProvider value={userData}>
+          <HandleAuthenticate />
+        </UserProvider>
       </div>
     );
   }

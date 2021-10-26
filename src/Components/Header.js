@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
+import { UserConsumer } from './UserContext';
 class Header extends React.Component {
   // eslint-disable-next-line no-useless-constructor
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       navVisible: false,
     };
@@ -16,47 +16,52 @@ class Header extends React.Component {
     });
   };
   render() {
-    console.log(this.props.userData, 'userDattaaaaaaaa');
     return (
-      <header class='bg-blue-200 dark:bg-gray-800  header'>
-        <nav class='border-b dark:border-gray-700'>
-          <div class='container px-6 py-4 mx-auto lg:flex lg:justify-between lg:items-center'>
-            <div class='main__container'>
-              <div>
-                <a class='text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300'>
-                  <NavLink to='/' className='header__icon'>
-                    <img src='/images/medium.svg' alt='medium logo' />
-                  </NavLink>
-                </a>
-              </div>
+      <UserConsumer>
+        {(props) => {
+          return (
+            <header class='bg-blue-200 dark:bg-gray-800  header'>
+              <nav class='border-b dark:border-gray-700'>
+                <div class='container px-6 py-4 mx-auto lg:flex lg:justify-between lg:items-center'>
+                  <div class='main__container'>
+                    <div>
+                      <a class='text-2xl font-bold text-gray-800 dark:text-white lg:text-3xl hover:text-gray-700 dark:hover:text-gray-300'>
+                        <NavLink to='/' className='header__icon'>
+                          <img src='/images/medium.svg' alt='medium logo' />
+                        </NavLink>
+                      </a>
+                    </div>
 
-              {/* <!-- Mobile menu button --> */}
-              <div class={this.state.navVisible ? 'display' : 'hide'}>
-                {this.props.isLoggedIn ? (
-                  <AuthHeader Signout={this.props.Signout} />
-                ) : (
-                  <NonAuthHeader />
-                )}
-              </div>
+                    {/* <!-- Mobile menu button --> */}
+                    <div class={this.state.navVisible ? 'display' : 'hide'}>
+                      {this.props.isLoggedIn ? (
+                        <AuthHeader Signout={this.props.Signout} />
+                      ) : (
+                        <NonAuthHeader />
+                      )}
+                    </div>
 
-              <div class='lg:hidden burger__menu'>
-                <button
-                  type='button'
-                  class='text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400'
-                  aria-label='Toggle menu'
-                  onClick={this.hideTheNav}
-                >
-                  <svg viewBox='0 0 24 24' class='w-6 h-6 fill-current'>
-                    <path d='M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z'></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
+                    <div class='lg:hidden burger__menu'>
+                      <button
+                        type='button'
+                        class='text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400'
+                        aria-label='Toggle menu'
+                        onClick={this.hideTheNav}
+                      >
+                        <svg viewBox='0 0 24 24' class='w-6 h-6 fill-current'>
+                          <path d='M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z'></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
 
-            {/* <!-- Mobile Menu open: "block", Menu closed: "hidden" --> */}
-          </div>
-        </nav>
-      </header>
+                  {/* <!-- Mobile Menu open: "block", Menu closed: "hidden" --> */}
+                </div>
+              </nav>
+            </header>
+          );
+        }}
+      </UserConsumer>
     );
   }
 }
